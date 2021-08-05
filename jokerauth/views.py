@@ -30,5 +30,5 @@ def activatekey(request, id):
 def deletekey(request, id):
     key = SSHKey.objects.get(pk=id)
     if key.user == request.user:
-        key.delete()
+        key.deleteit()
     return HttpResponseRedirect('/sshkeys')

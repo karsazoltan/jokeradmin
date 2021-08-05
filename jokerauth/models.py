@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from jokerauth.service import *
+
 
 class SSHKey(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
@@ -13,7 +15,13 @@ class SSHKey(models.Model):
         if self.active is False:
             self.active = True
             # aktiválás
+            addNewKey(self)
         else:
             self.active = False
             # törlés
+            deleteKey(self)
         self.save()
+
+    def deleteit(self):
+        deleteKey(self)
+        self.delete()
