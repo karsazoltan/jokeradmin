@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-KEYDIR = '/etc/ssh/authorized_keys/'
+KEYDIR = ''
+#KEYDIR = '/home1/karsa/keys' #sudo crontab */2 * * * * cp -a /home1/karsa/keys/. /etc/ssh/authorized_keys/
+#KEYDIR = '/etc/ssh/authorized_keys/'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +32,10 @@ LOGOUT_REDIRECT_URL = 'home'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'jokerdev.cloud.bme.hu',
+    '127.0.0.1'
+]
 
 # Application definition
 

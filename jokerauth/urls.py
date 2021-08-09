@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
     path('sshkeys', views.sshkey, name='sshkeys'),
-    path('activatekey/<int:id>/', views.activatekey, name='activatekey'),
-    path('deletekey/<int:id>/', views.deletekey, name='deletekey')
+    path('sshkeys/activate/<int:id>/', views.activatekey, name='activatekey'),
+    path('sshkeys/delete/<int:id>/', views.deletekey, name='deletekey')
 ]

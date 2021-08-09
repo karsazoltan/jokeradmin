@@ -9,7 +9,7 @@ from projects.models import Project
 @login_required
 def projects(request):
     projects = Project.objects.filter(owner=request.user)
-    partnerprojects = request.user.project_set.all()
+    partnerprojects = request.user.projects.all()
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
@@ -19,3 +19,18 @@ def projects(request):
         form = ProjectForm()
     return render(request, 'projects/project.html',
                   {'form': form, 'projects': projects, 'partnerprojects': partnerprojects })
+
+@login_required
+def details(request, id):
+    project = Project.objects.get(pk=id)
+    return render(request, 'projects/details.html',
+                  { 'project' : project })
+
+@login_required
+def deleteproject(request, id):
+    project = Project.objects.get(pk=id)
+    if request.user == project.owner:
+        project.delete()
+    else:
+        return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/projects')

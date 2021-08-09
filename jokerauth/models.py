@@ -7,7 +7,7 @@ from jokerauth.service import *
 class SSHKey(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     create_date = models.DateTimeField(default=timezone.now)
-    pubkey = models.TextField()
+    pubkey = models.TextField(unique=True)
     active = models.BooleanField()
     comment = models.CharField(max_length=100, null=True)
 
