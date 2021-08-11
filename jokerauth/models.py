@@ -14,14 +14,13 @@ class SSHKey(models.Model):
     def addtoserver(self):
         if self.active is False:
             self.active = True
-            # aktiválás
-            addNewKey(self)
         else:
             self.active = False
-            # törlés
-            deleteKey(self)
         self.save()
+        keys = SSHKey.objects.filter(user=self.user).filter(active=True)
+        savekeys(keys, self.user)
 
     def deleteit(self):
-        deleteKey(self)
         self.delete()
+        keys = SSHKey.objects.filter(user=self.user).filter(active=True)
+        savekeys(keys, self.user)

@@ -1,5 +1,6 @@
 from django import forms
 from projects.models import Project
+from django.contrib.auth import get_user_model
 
 
 class ProjectForm(forms.Form):
@@ -14,3 +15,11 @@ class ProjectForm(forms.Form):
             description=self.cleaned_data['description'],
             public=self.cleaned_data['public'])
         newproject.save()
+
+
+class AddPartnerForm(forms.Form):
+    user = forms.CharField(max_length=200)
+
+    def addpartner(self, project):
+        user = get_user_model().objects.filter(username__icontains=self.cleaned_data['user']).get()
+        project.users.add(user)

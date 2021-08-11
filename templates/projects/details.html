@@ -27,14 +27,46 @@
     <table class="table">
         <tr><th>Owner</th><td>{{ project.owner }}</td></tr>
         <tr><th>Description</th><td>{{ project.description }}</td></tr>
-        <tr><th>Users</th><td>
-            {% if project.users %}
-                {{ project.users }}
-            {% endif %}
+        <tr><th>Public</th><td>{{ project.public }}</td></tr>
+        <tr><th>Partners</th><td>
+            <ul>
+                {% for user in partners %}
+                    <li>{{ user.username }}</li>
+                {% endfor %}
+            </ul>
         </td></tr>
     </table>
     {% if user == project.owner %}
         <h2>Edit project</h2>
+        <h3>Add partner user</h3>
+        <form action="{% url 'details' project.id %}" method="post">
+            {% csrf_token %}
+            <label for="user">Partner name:</label>
+            <input id="user" type="text" name="user">
+            <input type="submit" value="OK">
+        </form>
+        <h3>Delete partner user</h3>
+        <table class="table">
+            {% for p in partners %}
+                <tr>
+                    <td>{{ p.username }}</td>
+                    <td><a href="{% url 'deletepartner' project.id p.id %}"><button type="button" class="btn btn-danger">Delete Partner</button></a></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <h3>Delete Project</h3>
         <a href="{% url 'deleteproject' project.id %}"><button type="button" class="btn btn-danger">Delete Project</button></a>
     {% endif %}
+        <script>
+            $( function() {
+                var availableUsers = [
+                    {% for user in users %}
+                        "{{user.username}}",
+                    {% endfor %}
+                ];
+                $( "#user" ).autocomplete({
+                    source: availableUsers
+                });
+            });
+        </script>
 {% endblock %}
