@@ -1,34 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}Projektek{% endblock %}
 
 {% block navbar %}
-    <nav class="nav" style="background-color: white; padding: 10px;">
-        <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
-        {% if user.is_authenticated %}
-            <a class="nav-link" href="{% url 'sshkeys' %}">SSH Keys</a>
-            <a class="nav-link active" href="{% url 'projects' %}">Projects</a>
-        {% endif %}
-        <div style="float: right">
-            {% if user.is_authenticated %}
-                <i>Hi <b>{{ user.username }}</b>!</i>
-                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-            {% else %}
-                <i>You are not logged in</i>
-                <a class="nav-link" href="{% url 'login' %}">Log In</a>
-            {% endif %}
-        </div>
-    </nav>
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-    <h1>Project: </h1>
-    <h2>{{ project.title }}</h2>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <h1>"{{ project.title }}" projekt</h1>
     <table class="table">
-        <tr><th>Owner</th><td>{{ project.owner }}</td></tr>
-        <tr><th>Description</th><td>{{ project.description }}</td></tr>
-        <tr><th>Public</th><td>{{ project.public }}</td></tr>
-        <tr><th>Partners</th><td>
+        <tr><th>Tulajdonos</th><td>{{ project.owner }}</td></tr>
+        <tr><th>Leírás</th><td id="description">markdown content</td></tr>
+        <tr><th>Publikus</th><td>{{ project.public }}</td></tr>
+        <tr><th>Partnerek</th><td>
             <ul>
                 {% for user in partners %}
                     <li>{{ user.username }}</li>
@@ -37,26 +26,51 @@
         </td></tr>
     </table>
     {% if user == project.owner %}
-        <h2>Edit project</h2>
-        <h3>Add partner user</h3>
+        <h2>Projekt szerkesztése</h2>
+        <h3>Partner felhasználó kezelése</h3>
         <form action="{% url 'details' project.id %}" method="post">
             {% csrf_token %}
-            <label for="user">Partner name:</label>
-            <input id="user" type="text" name="user">
-            <input type="submit" value="OK">
+                {% if form.non_field_errors %}
+                    <ul class='form-errors'>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                 </ul>
+            {% endif %}
+            <div class="form-group row">
+                <label for="user" class="col-md-2 col-form-label">Partner felhasználói neve:</label>
+                <div class="col-md-4">
+                    <input class="form-control" id="user" type="text" name="user">
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" value="Felvétel" class="btn btn-primary">
+                </div>
+            </div>
         </form>
-        <h3>Delete partner user</h3>
-        <table class="table">
+        <h3>Partner eltávolítása a projektből</h3>
+        <div class="card-deck">
             {% for p in partners %}
-                <tr>
-                    <td>{{ p.username }}</td>
-                    <td><a href="{% url 'deletepartner' project.id p.id %}"><button type="button" class="btn btn-danger">Delete Partner</button></a></td>
-                </tr>
+                <div class="card">
+                    <div class="card-header container-fluid">
+                        <div class="row">
+                            <div class="col-9">
+                                <h5>{{ p.username }}</h5>
+                            </div>
+                            <div class="col-3">
+                                <div class="float-end">
+                                    <a href="{% url 'deletepartner' project.id p.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        Email: {{ p.email }}
+                    </div>
+                </div>
             {% endfor %}
-        </table>
-        <h3>Delete Project</h3>
-        <a href="{% url 'deleteproject' project.id %}"><button type="button" class="btn btn-danger">Delete Project</button></a>
-    {% endif %}
+        </div>
+        <h3>Projekt törlése</h3>
+        <a href="{% url 'deleteproject' project.id %}"><button type="button" class="btn btn-danger">Törlés</button></a>
         <script>
             $( function() {
                 var availableUsers = [
@@ -69,4 +83,8 @@
                 });
             });
         </script>
+    {% endif %}
+    <script>
+            document.getElementById('description').innerHTML = marked('{{ project.description | escapejs }}');
+    </script>
 {% endblock %}

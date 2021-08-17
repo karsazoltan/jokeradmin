@@ -3,25 +3,14 @@
 {% block title %}Home{% endblock %}
 
 {% block navbar %}
-    <nav class="nav" style="background-color: white; padding: 10px;">
-        <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-        {% if user.is_authenticated %}
-            <a class="nav-link" href="{% url 'sshkeys' %}">SSH Keys</a>
-            <a class="nav-link" href="{% url 'projects' %}">Projects</a>
-        {% endif %}
-        <div style="float: right">
-            {% if user.is_authenticated %}
-                <i>Hi <b>{{ user.username }}</b>!</i>
-                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-            {% else %}
-                <i>You are not logged in</i>
-                <a class="nav-link" href="{% url 'login' %}">Log In</a>
-            {% endif %}
-        </div>
-    </nav>
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-<h1>Home page</h1>
+<h1>Kezdőlap</h1>
 
 {% endblock %}

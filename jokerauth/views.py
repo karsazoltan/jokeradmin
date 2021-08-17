@@ -8,6 +8,7 @@ from jokerauth.models import SSHKey
 @login_required
 def sshkey(request):
     keys = SSHKey.objects.filter(user=request.user)
+    allkeys = SSHKey.objects.all()
     if request.method == 'POST':
         form = SSHKeyForm(request.POST)
         if form.is_valid():
@@ -15,13 +16,13 @@ def sshkey(request):
             return HttpResponseRedirect('/sshkeys')
     else:
         form = SSHKeyForm()
-    return render(request, 'jokerauth/sshkeys.html', {'form': form, 'keys': keys})
+    return render(request, 'jokerauth/sshkeys.html', {'form': form, 'keys': keys, 'allkeys': allkeys})
 
 
 @login_required
 def activatekey(request, id):
     key = SSHKey.objects.get(pk=id)
-    if key.user == request.user:
+    if key.user == request.user or request.user.is_superuser:
         key.addtoserver()
     return HttpResponseRedirect('/sshkeys')
 
@@ -29,6 +30,6 @@ def activatekey(request, id):
 @login_required
 def deletekey(request, id):
     key = SSHKey.objects.get(pk=id)
-    if key.user == request.user:
+    if key.user == request.user or request.user.is_superuser:
         key.deleteit()
     return HttpResponseRedirect('/sshkeys')

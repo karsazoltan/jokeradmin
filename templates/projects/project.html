@@ -1,57 +1,113 @@
 {% extends 'base.html' %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}Projektek{% endblock %}
 
 {% block navbar %}
-    <nav class="nav" style="background-color: white; padding: 10px;">
-        <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
-        {% if user.is_authenticated %}
-            <a class="nav-link" href="{% url 'sshkeys' %}">SSH Keys</a>
-            <a class="nav-link active" href="{% url 'projects' %}">Projects</a>
-        {% endif %}
-        <div style="float: right">
-            {% if user.is_authenticated %}
-                <i>Hi <b>{{ user.username }}</b>!</i>
-                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-            {% else %}
-                <i>You are not logged in</i>
-                <a class="nav-link" href="{% url 'login' %}">Log In</a>
-            {% endif %}
-        </div>
-    </nav>
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-    <h1>Projects</h1>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <h1>Projektek</h1>
     <h2>Saját</h2>
-    <table class="table">
+    <div id="userprojects">
         {% for p in projects %}
-            <tr>
-                <td>{{ p.title }}</td>
-                <td>{{ p.public }}</td>
-                <td><a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary">Details</button></a></td>
-            </tr>
+            <div class="card my-3">
+                <div class="card-header container-fluid" id="headingOne">
+                    <button class="btn" data-toggle="collapse" data-target="#userproject{{ p.id }}" aria-expanded="true" aria-controls="userproject{{ p.id }}">
+                        <i class="bi bi-justify"></i> {{ p.title }}
+                    </button>
+                    <div class="float-right">
+                        <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></a>
+                    </div>
+                </div>
+                <div id="userproject{{ p.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#userprojects">
+                    <div class="card-body" id="usercontent{{ p.id }}">
+                        markdown content
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            empty
         {% endfor %}
-    </table>
-    <h2>Partner projects</h2>
-    <table class="table">
+    </div>
+    <h2>Partner projektek</h2>
+    <div id="partnerprojects">
         {% for p in partnerprojects %}
-            <tr>
-                <td>{{ p.owner }}</td>
-                <td>{{ p.title }}</td>
-                <td>{{ p.public }}</td>
-                <td><a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary">Details</button></a></td>
-            </tr>
+            <div class="card my-3">
+                <div class="card-header container-fluid" id="headingOne">
+                    <button class="btn" data-toggle="collapse" data-target="#partnerproject{{ p.id }}" aria-expanded="true" aria-controls="partnerproject{{ p.id }}">
+                        <i class="bi bi-justify"></i> {{ p.owner.username }}/{{ p.title }}
+                    </button>
+                    <div class="float-end">
+                        <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-info-square"></i></button></a>
+                    </div>
+                </div>
+                <div id="partnerproject{{ p.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#partnerprojects">
+                    <div class="card-body">
+                        Publikus: {{ p.public }}<br>
+                        <i>{{ p.description }}</i>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </table>
-    <h2>New project</h2>
+    </div>
+    <h2>Projekt létrehozása</h2>
     <form action="{% url 'projects' %}" method="post">
-        <div class="form-group">
-            {% csrf_token %}
-            <table class="table">
-                {{ form.as_table }}
-            </table>
-            <input type="submit" value="Submit" class="btn btn-primary">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label class="col-md-1 col-form-label" for="id_title">Projekt neve:</label>
+            <div class="col-md-4">
+                <input type="text" name="title" class="form-control" maxlength="100" required="" id="id_title" placeholder="Cím">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_description" class="col-md-1 col-form-label">Leírás:</label>
+            <div class="col-md-4">
+                <textarea name="description" class="form-control" cols="40" rows="10" maxlength="1000" aria-describedby="help" required="" id="id_description" placeholder="Leírás"># H1
+## h2
+* felsorolás 1
+* felsorolás 2
+*dőlt* sima **vastag**
+
+bekezdés1 [link](https://google.com)</textarea>
+                <small id="help" class="form-text text-muted">Markdown formázás használható: </small>
+            </div>
+            <div class="col-md-7">
+                <div class="card bg-light mb-3">
+                        <div class="card-header"><h5>Leírás előnézet</h5></div>
+                    <div class="card-body">
+                        <div id="preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_public" class="col-md-1 col-form-label">Publikus:</label>
+            <div class="col-md-11">
+                <input type="checkbox" name="public" aria-describedby="public_help"  id="id_public">
+                <small id="public_help" class="form-text text-muted">A projekt megjelenik a kezdőlapon mindenki számára.</small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-11">
+                <input type="submit" value="Létrehozás" class="btn btn-primary">
+            </div>
         </div>
     </form>
+    <script>
+        $(document).ready(function () {
+            $('#id_description').bind('input propertychange', function() {
+                $('#preview').html(marked($('#id_description').val()))
+            });
+            $('#preview').html(marked($('#id_description').val()))
+        })
+        {% for p in projects %}
+            document.getElementById('usercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
+        {% endfor %}
+    </script>
 {% endblock %}
