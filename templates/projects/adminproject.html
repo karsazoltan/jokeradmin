@@ -5,15 +5,14 @@
 {% block navbar %}
     {% if user.is_authenticated %}
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <h1>Projektek</h1>
-    <h2>Saját</h2>
+    <h1>ADMIN - Projektek</h1>
     <div id="userprojects">
         {% for p in projects %}
             <div class="card my-3">
@@ -35,29 +34,6 @@
             nincs
         {% endfor %}
     </div>
-    <h2>Partner projektek</h2>
-    <div id="partnerprojects">
-        {% for p in partnerprojects %}
-            <div class="card my-3">
-                <div class="card-header container-fluid" id="headingOne">
-                    <button class="btn" data-toggle="collapse" data-target="#partnerproject{{ p.id }}" aria-expanded="true" aria-controls="partnerproject{{ p.id }}">
-                        <i class="bi bi-justify"></i> {{ p.owner.username }}/{{ p.title }}
-                    </button>
-                    <div class="float-end">
-                        <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-info-square"></i></button></a>
-                    </div>
-                </div>
-                <div id="partnerproject{{ p.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#partnerprojects">
-                    <div class="card-body">
-                        Publikus: {{ p.public }}<br>
-                        <i>{{ p.description }}</i>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            nincs
-        {% endfor %}
-    </div>
     <h2>Projekt létrehozása</h2>
     <form action="{% url 'projects' %}" method="post">
         {% csrf_token %}
@@ -65,6 +41,19 @@
             <label class="col-md-1 col-form-label" for="id_title">Projekt neve:</label>
             <div class="col-md-4">
                 <input type="text" name="title" class="form-control" maxlength="100" required="" id="id_title" placeholder="Cím">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-1 col-form-label" for="id_owner">Tulajdonos:</label>
+            <div class="col-md-4">
+                <input type="text" name="owner" class="form-control" maxlength="100" required="" id="id_owner" placeholder="Tulajdonos">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-1 col-form-label" for="id_partners">Partnerek:</label>
+            <div class="col-md-4">
+                <input type="text" name="partners" class="form-control" maxlength="100" required="" aria-describedby="partner_help" id="id_partners" placeholder="Partnerek">
+                <small id="partner_help" class="form-text text-muted">Felhasználók felsorolása vesszővel: </small>
             </div>
         </div>
         <div class="form-group row">

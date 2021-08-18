@@ -30,17 +30,17 @@
         <h3>Partner felhasználó kezelése</h3>
         <form action="{% url 'details' project.id %}" method="post">
             {% csrf_token %}
-                {% if form.non_field_errors %}
-                    <ul class='form-errors'>
+            {% if form.non_field_errors %}
+                <ul class='list-group py-3'>
                     {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
+                        <li class="list-group-item list-group-item-danger">{{ error }}</li>
                     {% endfor %}
                  </ul>
             {% endif %}
             <div class="form-group row">
                 <label for="user" class="col-md-2 col-form-label">Partner felhasználói neve:</label>
                 <div class="col-md-4">
-                    <input class="form-control" id="user" type="text" name="user">
+                    <input class="form-control autocomplete" id="user" type="text" name="user">
                 </div>
                 <div class="col-md-2">
                     <input type="submit" value="Felvétel" class="btn btn-primary">
@@ -79,7 +79,13 @@
                     {% endfor %}
                 ];
                 $( "#user" ).autocomplete({
-                    source: availableUsers
+                    source: availableUsers,
+                    messages: {
+                        noResults: '',
+                        results: function(amount) {
+                            return amount + ' találat'
+                        }
+                    }
                 });
             });
         </script>

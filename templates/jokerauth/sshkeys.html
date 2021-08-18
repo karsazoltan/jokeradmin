@@ -62,41 +62,4 @@
             </div>
         </div>
     </form>
-    {% if user.is_superuser %}
-        <h2>Manage all keys (as superuser)</h2>
-        <div id="allkeys">
-        {% for key in allkeys %}
-            <div class="card my-3">
-                <div class="card-header container-fluid" id="headingOne">
-                    <button class="btn" data-toggle="collapse" data-target="#key{{ key.id }}" aria-expanded="true" aria-controls="key{{ key.id }}">
-                        <i class="bi bi-justify"></i> {{ key.user }}/{{ key.comment }}
-                    </button>
-                    <div class="float-end">
-                             {% if key.active %}
-                                 <a href="{% url 'activatekey' key.id %}"><button type="button" class="btn btn-warning"><i class="bi bi-check-square"></i></button></a>
-                             {% else %}
-                                 <a href="{% url 'activatekey' key.id %}"><button type="button" class="btn btn-success"><i class="bi bi-square"></i></button></a>
-                            {% endif %}
-                            <a href="{% url 'deletekey' key.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></a>
-                    </div>
-                </div>
-                <div id="key{{ key.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#allkeys">
-                    <div class="card-body">
-                        <b>{{ key.create_date }}</b><br>
-                        {% if key.active %}
-                            Jelenleg aktív
-                        {% else %}
-                            Most nem aktív
-                        {% endif %}
-                        <br>
-                        {{ key.pubkey }}<br>
-                        Rendszernév: {{ key.user.userdetail.systemuser }}
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            empty
-        {% endfor %}
-        </div>
-    {% endif %}
 {% endblock %}

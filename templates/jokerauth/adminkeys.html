@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>ADMIN - SSH Kulcsok</h1>
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Kulcsok</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="float-end">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" id="form1" placeholder="Felhasználói név" class="form-control" />
+                    </div>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="allkeys">
+        {% for key in allkeys %}
+            <div class="card my-3">
+                <div class="card-header container-fluid" id="headingOne">
+                    <button class="btn" data-toggle="collapse" data-target="#key{{ key.id }}" aria-expanded="true" aria-controls="key{{ key.id }}">
+                        <i class="bi bi-justify"></i> {{ key.user }}/{{ key.comment }}
+                    </button>
+                    <div class="float-end">
+                             {% if key.active %}
+                                 <a href="{% url 'adminactivatekey' key.id %}"><button type="button" class="btn btn-warning"><i class="bi bi-check-square"></i></button></a>
+                             {% else %}
+                                 <a href="{% url 'admindeletekey' key.id %}"><button type="button" class="btn btn-success"><i class="bi bi-square"></i></button></a>
+                            {% endif %}
+                            <a href="{% url 'admindeletekey' key.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></a>
+                    </div>
+                </div>
+                <div id="key{{ key.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#allkeys">
+                    <div class="card-body">
+                        <b>{{ key.create_date }}</b><br>
+                        {% if key.active %}
+                            Jelenleg aktív
+                        {% else %}
+                            Most nem aktív
+                        {% endif %}
+                        <br>
+                        {{ key.pubkey }}<br>
+                        Rendszernév: {{ key.user.userdetail.systemuser }}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            empty
+        {% endfor %}
+        </div>
+    <h2>Új kulcs megadása</h2>
+    <form action="{% url 'adminkeys' %}" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="id_username">Felhasználó:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="text" name="username" maxlength="100" required="" id="id_username" placeholder="Felhasználó">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="id_comment">Megjegyzés:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="text" name="comment" maxlength="100" required="" id="id_comment" placeholder="Megjegyzés">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_pubkey" class="col-md-2 col-form-label">Kulcs:</label>
+            <div class="col-md-4">
+                <textarea class="form-control" name="pubkey" cols="40" rows="10" maxlength="1000" required="" id="id_pubkey" placeholder="Publikus RSA kulcs"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-10">
+                <input type="submit" value="Rendben" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+    <script>
+            $( function() {
+                var availableUsers = [
+                    {% for user in users %}
+                        "{{user.username}}",
+                    {% endfor %}
+                ];
+                $( "#id_username" ).autocomplete({
+                    source: availableUsers,
+                    messages: {
+                        noResults: '',
+                        results: function(amount) {
+                            return amount + ' találat'
+                        }
+                    }
+                });
+            });
+    </script>
+{% endblock %}

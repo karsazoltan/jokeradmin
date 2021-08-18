@@ -22,10 +22,16 @@ class ProjectForm(forms.Form):
 class AddPartnerForm(forms.Form):
     user = forms.CharField(max_length=200)
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(AddPartnerForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         user = get_user_model().objects.filter(username__icontains=self.cleaned_data['user'])
         if user.count() == 0:
-            raise ValidationError("Nincs ilyen felhasználó")
+            raise ValidationError("Nincs ilyen felhasználó: " + self.cleaned_data['user'])
+        if user.get() == self.request.user:
+            raise ValidationError("Már tulajdonos vagy!")
         return self.cleaned_data
 
     def addpartner(self, project):
