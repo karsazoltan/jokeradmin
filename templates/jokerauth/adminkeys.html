@@ -11,24 +11,41 @@
 {% endblock %}
 
 {% block content %}
-    <h1>ADMIN - SSH Kulcsok</h1>
+    <div class="row">
+        <div class="col-sm-4">
+            <h1>SSH Kulcsok</h1>
+        </div>
+        <div class="col-sm-8">
+            <div class="float-end">
+                <div class="alert-danger alert" role="alert">
+                    <h5>ADMIN Oldal</h5>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-4">
             <h2>Kulcsok</h2>
         </div>
         <div class="col-sm-8">
-            <div class="float-end">
-                <div class="input-group">
-                    <div class="form-outline">
-                        <input type="search" id="form1" placeholder="Felhasználói név" class="form-control" />
+            <div class="container-fluid">
+                <div class="float-end">
+                    <div class="input-group">
+                        <button type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
+                        <button type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
+                        <button type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
+                        <button type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
+                        <div class="form-outline">
+                            <input type="search" id="search" placeholder="Felhasználói név" class="form-control" value="{{ filter }}"  />
+                        </div>
+                        <button type="button"  class="btn btn-primary" onclick="search()"><i class="bi bi-search"></i></button>
+                        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#help"><i class="bi bi-question-square"></i></button>
                     </div>
-                    <button type="button" class="btn btn-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
                 </div>
             </div>
         </div>
     </div>
+
     <div id="allkeys">
         {% for key in allkeys %}
             <div class="card my-3">
@@ -54,8 +71,9 @@
                             Most nem aktív
                         {% endif %}
                         <br>
-                        {{ key.pubkey }}<br>
-                        Rendszernév: {{ key.user.userdetail.systemuser }}
+                        <b>Rendszernév: {{ key.user.userdetail.systemuser }}</b>
+                        <br>
+                        <i>{{ key.pubkey }}</i>
                     </div>
                 </div>
             </div>
@@ -64,7 +82,7 @@
         {% endfor %}
         </div>
     <h2>Új kulcs megadása</h2>
-    <form action="{% url 'adminkeys' %}" method="post">
+    <form action="{% url 'adminkeys' %}" method="post" id="form">
         {% csrf_token %}
         {% if form.non_field_errors %}
             <ul class='list-group py-3'>
@@ -105,6 +123,7 @@
                     {% endfor %}
                 ];
                 $( "#id_username" ).autocomplete({
+                    minLength: 2,
                     source: availableUsers,
                     messages: {
                         noResults: '',
@@ -114,5 +133,38 @@
                     }
                 });
             });
+            {% if form.is_bound %}
+                $(window).on("load", goToId);
+            {% endif %}
+            let pagination = new Pagination({{ page }}, {{ maxpage }}, "{{ filter }}", "{% url 'adminkeys' %}");
+            function search() {
+                pagination.filter = $('#search').val();
+                pagination.start();
+            }
     </script>
+
+    <!-- Modal -->
+    <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalTitle">Használat</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        Az itt beállított kulcsok minden páros percben kerülnek érvényesítésre. <b>Ezért érdemes a beállítás után 2 percet várni</b>, majd azután csatlakozással próbálkozni. Az admin oldalon a maximális kulcsszámon felül is tudunk egy-egy felhasználóhoz SSH kulcsokat rendelni.
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item"><button type="button" class="btn me-3"><i class="bi bi-justify"></i></button>Részletek megnyitása</li>
+                        <li class="list-group-item"><button type="button" class="btn btn-warning me-3"><i class="bi bi-check-square"></i></button>SSH Kulcs inaktiválása</li>
+                        <li class="list-group-item"><button type="button" class="btn btn-success me-3"><i class="bi bi-square"></i></button>SSH Kulcs aktiválása</li>
+                        <li class="list-group-item"><button type="button" class="btn btn-danger me-3"><i class="bi bi-trash"></i></button>SSH Kulcs törlése</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

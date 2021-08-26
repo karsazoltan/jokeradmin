@@ -28,7 +28,7 @@
     {% if user == project.owner %}
         <h2>Projekt szerkesztése</h2>
         <h3>Partner felhasználó kezelése</h3>
-        <form action="{% url 'details' project.id %}" method="post">
+        <form action="{% url 'details' project.id %}" method="post" id="form">
             {% csrf_token %}
             {% if form.non_field_errors %}
                 <ul class='list-group py-3'>
@@ -70,7 +70,32 @@
             {% endfor %}
         </div>
         <h3>Projekt törlése</h3>
-        <a href="{% url 'deleteproject' project.id %}"><button type="button" class="btn btn-danger">Törlés</button></a>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+            Törlés
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">A "{{ project.title }}" projekt törlése</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        A projekt végleges törlésre kerül!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Mégse</button>
+                        <a href="{% url 'deleteproject' project.id %}"><button type="button" class="btn btn-danger">Törlés</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             $( function() {
                 var availableUsers = [
@@ -79,6 +104,7 @@
                     {% endfor %}
                 ];
                 $( "#user" ).autocomplete({
+                    minLength: 2,
                     source: availableUsers,
                     messages: {
                         noResults: '',
@@ -92,5 +118,8 @@
     {% endif %}
     <script>
             document.getElementById('description').innerHTML = marked('{{ project.description | escapejs }}');
+            {% if form.is_bound %}
+                $(window).on("load", goToId);
+            {% endif %}
     </script>
 {% endblock %}

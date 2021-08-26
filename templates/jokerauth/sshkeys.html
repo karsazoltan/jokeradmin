@@ -12,8 +12,24 @@
 
 {% block content %}
     <h1>SSH Kulcsok</h1>
-    <p><b>Joker rendszernév: </b>{{ user.userdetail.systemuser }}</p>
-    <h2>Megadott kulcsok</h2>
+    <p><b>Joker rendszernév: </b><i>{{ user.userdetail.systemuser }}</i> - ezen felhasználóhoz csatoljuk a kulcsot.</p>
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Kulcsok</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="container-fluid">
+                <div class="float-end">
+                    <div class="input-group">
+                    </button>
+                        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#help">
+                        <i class="bi bi-question-square"></i>
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="accordion">
         {% for key in keys %}
             <div class="card my-3">
@@ -42,8 +58,15 @@
         {% endfor %}
     </div>
     <h2>Új kulcs megadása</h2>
-    <form action="{% url 'sshkeys' %}" method="post">
+    <form action="{% url 'sshkeys' %}" method="post" id="form">
         {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <div class="form-group row">
             <label class="col-md-2 col-form-label" for="id_comment">Megjegyzés:</label>
             <div class="col-md-4">
@@ -62,4 +85,33 @@
             </div>
         </div>
     </form>
+    <script>
+        {% if form.is_bound %}
+            $(window).on("load", goToId);
+        {% endif %}
+    </script>
+    <!-- Modal -->
+    <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalTitle">Használat</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        Az itt beállított kulcsok minden páros percben kerülnek érvényesítésre. <b>Ezért érdemes a beállítás után 2 percet várni</b>, majd azután csatlakozással próbálkozni. Minden felhasználó maximum {{ maxkeynum }} db SSH - RSA kulcsot adhat meg!
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item"><button type="button" class="btn me-3"><i class="bi bi-justify"></i></button>Részletek megnyitása</li>
+                        <li class="list-group-item"><button type="button" class="btn btn-warning me-3"><i class="bi bi-check-square"></i></button>SSH Kulcs inaktiválása</li>
+                        <li class="list-group-item"><button type="button" class="btn btn-success me-3"><i class="bi bi-square"></i></button>SSH Kulcs aktiválása</li>
+                        <li class="list-group-item"><button type="button" class="btn btn-danger me-3"><i class="bi bi-trash"></i></button>SSH Kulcs törlése</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

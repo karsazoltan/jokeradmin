@@ -12,13 +12,41 @@
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <h1>ADMIN - Projektek</h1>
+    <div class="row">
+        <div class="col-sm-4">
+            <h1>Projektek</h1>
+        </div>
+        <div class="col-sm-8">
+            <div class="float-end">
+                <div class="alert-danger alert" role="alert">
+                    <h5>ADMIN Oldal</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Projektek szerkesztése</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="float-end">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" id="form1" placeholder="Felhasználói név" class="form-control" />
+                    </div>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="userprojects">
         {% for p in projects %}
             <div class="card my-3">
                 <div class="card-header container-fluid" id="headingOne">
                     <button class="btn" data-toggle="collapse" data-target="#userproject{{ p.id }}" aria-expanded="true" aria-controls="userproject{{ p.id }}">
-                        <i class="bi bi-justify"></i> {{ p.title }}
+                        <i class="bi bi-justify"></i> {{ p.owner.username }}/{{ p.title }}
                     </button>
                     <div class="float-right">
                         <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></a>
@@ -35,8 +63,15 @@
         {% endfor %}
     </div>
     <h2>Projekt létrehozása</h2>
-    <form action="{% url 'projects' %}" method="post">
+    <form action="{% url 'adminprojects' %}" method="post" id="form">
         {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <div class="form-group row">
             <label class="col-md-1 col-form-label" for="id_title">Projekt neve:</label>
             <div class="col-md-4">
@@ -100,5 +135,60 @@ bekezdés1 [link](https://google.com)</textarea>
         {% for p in projects %}
             document.getElementById('usercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
         {% endfor %}
+        function split( val ) {
+            return val.split( /,\s*/ );
+        }
+        function extractLast( term ) {
+            return split( term ).pop();
+        }
+        $( function() {
+            var availableUsers = [
+                {% for user in users %}
+                    "{{user.username}}",
+                {% endfor %}
+            ];
+            $( "#id_owner" ).autocomplete({
+                minLength: 2,
+                source: availableUsers,
+                messages: {
+                    noResults: '',
+                    results: function(amount) {
+                        return amount + ' találat'
+                    }
+                }
+            });
+            $( "#id_partners" ).autocomplete({
+                minLength: 2,
+                source: function( request, response ) {
+                    // delegate back to autocomplete, but extract the last term
+                    response( $.ui.autocomplete.filter(
+                    availableUsers, extractLast( request.term ) ) );
+                },
+                focus: function() {
+                    // prevent value inserted on focus
+                    return false;
+                },
+                messages: {
+                    noResults: '',
+                    results: function(amount) {
+                        return amount + ' találat'
+                    },
+                },
+                select: function( event, ui ) {
+                    var terms = split( this.value );
+                    // remove the current input
+                    terms.pop();
+                    // add the selected item
+                    terms.push( ui.item.value );
+                    // add placeholder to get the comma-and-space at the end
+                    terms.push( "" );
+                    this.value = terms.join( ", " );
+                    return false;
+                }
+            });
+        });
+        {% if form.is_bound %}
+            $(window).on("load", goToId);
+        {% endif %}
     </script>
 {% endblock %}

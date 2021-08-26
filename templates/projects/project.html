@@ -48,9 +48,8 @@
                     </div>
                 </div>
                 <div id="partnerproject{{ p.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#partnerprojects">
-                    <div class="card-body">
-                        Publikus: {{ p.public }}<br>
-                        <i>{{ p.description }}</i>
+                    <div class="card-body" id="partnercontent{{ p.id }}">
+                        markdown content
                     </div>
                 </div>
             </div>
@@ -59,7 +58,7 @@
         {% endfor %}
     </div>
     <h2>Projekt létrehozása</h2>
-    <form action="{% url 'projects' %}" method="post">
+    <form action="{% url 'projects' %}" method="post" id="form">
         {% csrf_token %}
         <div class="form-group row">
             <label class="col-md-1 col-form-label" for="id_title">Projekt neve:</label>
@@ -111,5 +110,11 @@ bekezdés1 [link](https://google.com)</textarea>
         {% for p in projects %}
             document.getElementById('usercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
         {% endfor %}
+        {% for p in partnerprojects %}
+            document.getElementById('partnercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
+        {% endfor %}
+        {% if form.is_bound %}
+            $(window).on("load", goToId);
+        {% endif %}
     </script>
 {% endblock %}

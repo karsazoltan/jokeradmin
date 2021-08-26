@@ -13,8 +13,11 @@ import os
 from pathlib import Path
 
 KEYDIR = ''
+#KEYDIR = '/usr/local/keys/'
 #KEYDIR = '/home1/karsa/keys' #sudo crontab */2 * * * * cp -a /home1/karsa/keys/. /etc/ssh/authorized_keys/
 #KEYDIR = '/etc/ssh/authorized_keys/'
+
+MAXKEYNUM = 5
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,6 +139,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+STATIC_ROOT = '/var/www/html/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

@@ -3,11 +3,21 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
 from jokerauth.models import SSHKey
+from sshjoker.settings import MAXKEYNUM
 
 
 class SSHKeyForm(forms.Form):
     comment = forms.CharField(max_length=100)
     pubkey = forms.CharField(widget=forms.Textarea, max_length=1000)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(SSHKeyForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        userKeyNum = SSHKey.objects.filter(user=self.request.user).count()
+        if MAXKEYNUM < userKeyNum + 1:
+            raise ValidationError("Maximális kulcsszám elérve!")
 
     def newKey(self, user):
         newkey = SSHKey(user=user, active=False, comment=self.cleaned_data['comment'], pubkey=self.cleaned_data['pubkey'])
