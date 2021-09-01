@@ -18,6 +18,10 @@ class SSHKeyForm(forms.Form):
         userKeyNum = SSHKey.objects.filter(user=self.request.user).count()
         if MAXKEYNUM < userKeyNum + 1:
             raise ValidationError("Maximális kulcsszám elérve!")
+        try:
+            systemuser = self.request.user.userdetail.systemuser
+        except:
+            raise ValidationError("A fiókhoz még nem tartozik társított rendszerfelhasználó (linux user). Kérje meg az egyik admin felhasználót, hogy állítsa be. ")
 
     def newKey(self, user):
         newkey = SSHKey(user=user, active=False, comment=self.cleaned_data['comment'], pubkey=self.cleaned_data['pubkey'])

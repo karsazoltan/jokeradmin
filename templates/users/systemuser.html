@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Rendszerfelhasználók{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Rendszerfelhasználók kezelése</h1>
+    <h2>Új rendszerfelhasználó hozzáadása</h2>
+    {% if cmd %}
+        <div class="alert alert-success" role="alert">
+            <h1 class="alert-heading">Bash parancs</h1>
+            <p>Még automatikusan nem kerül hozzáadásra a felhasználó, futassa az alábbi parancsot a user felvételéhez</p>
+            <hr>
+            <p style="font-family: Consolas, Monaco">{{ cmd }}</p>
+        </div>
+    {% endif %}
+    <form action="{% url 'systemuser'%}" method="post" id="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="form-group row">
+            <label for="user" class="col-md-2 col-form-label">Rendszerfelhasználó neve:</label>
+            <div class="col-md-4">
+                <input class="form-control autocomplete" id="id_username" type="text" name="username">
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Felvétel" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -25,16 +25,24 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <h2>Kulcsok</h2>
+            <h2 id="pagi">Kulcsok</h2>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-4">
             <div class="container-fluid">
-                <div class="float-end">
-                    <div class="input-group">
-                        <button type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
-                        <button type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
-                        <button type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
-                        <button type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
+                <div class="float-sm-start">
+                    <div class="input-group my-1">
+                        <button id="btn-start" type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
+                        <button id="btn-prev" type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
+                        <button id="btn-next" type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
+                        <button id="btn-end" type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="container-fluid">
+                <div class="float-sm-end">
+                    <div class="input-group my-1">
                         <div class="form-outline">
                             <input type="search" id="search" placeholder="Felhasználói név" class="form-control" value="{{ filter }}"  />
                         </div>
@@ -57,7 +65,7 @@
                              {% if key.active %}
                                  <a href="{% url 'adminactivatekey' key.id %}"><button type="button" class="btn btn-warning"><i class="bi bi-check-square"></i></button></a>
                              {% else %}
-                                 <a href="{% url 'admindeletekey' key.id %}"><button type="button" class="btn btn-success"><i class="bi bi-square"></i></button></a>
+                                 <a href="{% url 'adminactivatekey' key.id %}"><button type="button" class="btn btn-success"><i class="bi bi-square"></i></button></a>
                             {% endif %}
                             <a href="{% url 'admindeletekey' key.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></a>
                     </div>
@@ -134,13 +142,16 @@
                 });
             });
             {% if form.is_bound %}
-                $(window).on("load", goToId);
+                $(window).on("load", goToId("#form"));
             {% endif %}
             let pagination = new Pagination({{ page }}, {{ maxpage }}, "{{ filter }}", "{% url 'adminkeys' %}");
             function search() {
                 pagination.filter = $('#search').val();
                 pagination.start();
             }
+            {% if pagination %}
+                $(window).on("load", goToId("#pagi"));
+            {% endif %}
     </script>
 
     <!-- Modal -->
@@ -154,7 +165,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger" style="text-align: justify">
                         Az itt beállított kulcsok minden páros percben kerülnek érvényesítésre. <b>Ezért érdemes a beállítás után 2 percet várni</b>, majd azután csatlakozással próbálkozni. Az admin oldalon a maximális kulcsszámon felül is tudunk egy-egy felhasználóhoz SSH kulcsokat rendelni.
                     </div>
                     <ul class="list-group">

@@ -26,15 +26,17 @@ def sshkey(request):
 def adminkeys(request):
     if not request.user.is_superuser:
         raise PermissionDenied
-
+    pagination = False
     userfilter = ''
     if request.GET.get('search'):
+        pagination = True
         userfilter = request.GET.get('search')
     allkeys = SSHKey.objects.filter(user__username__contains=userfilter).order_by('-create_date')
     users = get_user_model().objects.all()
     paginator = Paginator(allkeys, 5)
     page_number = 1
     if request.GET.get('page'):
+        pagination = True
         page_number = request.GET.get('page')
     keys = paginator.get_page(page_number)
 
@@ -47,7 +49,7 @@ def adminkeys(request):
         form = AdminSSHKeyForm()
     return render(request, 'jokerauth/adminkeys.html',
                   {'allkeys': keys, 'form': form, 'users': users,
-                   'page': page_number, 'maxpage': paginator.num_pages, 'filter': userfilter})
+                   'page': page_number, 'maxpage': paginator.num_pages, 'filter': userfilter, 'pagination': pagination})
 
 
 @login_required

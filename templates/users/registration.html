@@ -8,11 +8,11 @@
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
     {% else %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'registration' %}">Hozzáférés kérése</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="{% url 'registration' %}">Hozzáférés kérése</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    <h1>Kezdőlap</h1>
+<h1>Hozzáférés kérése</h1>
 
 {% endblock %}

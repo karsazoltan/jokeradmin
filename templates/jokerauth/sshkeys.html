@@ -12,7 +12,13 @@
 
 {% block content %}
     <h1>SSH Kulcsok</h1>
-    <p><b>Joker rendszernév: </b><i>{{ user.userdetail.systemuser }}</i> - ezen felhasználóhoz csatoljuk a kulcsot.</p>
+    {% if user.userdetail.systemuser %}
+        <p><b>Joker rendszernév: </b><i>{{ user.userdetail.systemuser }}</i> - ezen felhasználóhoz csatoljuk a kulcsot.</p>
+    {% else %}
+        <div class="alert alert-danger">
+            A fiókhoz még nem tartozik társított rendszerfelhasználó (linux user). Kérje meg az egyik admin felhasználót, hogy állítsa be.
+        </div>
+    {% endif %}
     <div class="row">
         <div class="col-sm-4">
             <h2>Kulcsok</h2>
@@ -81,7 +87,7 @@
         </div>
         <div class="form-group row">
             <div class="col-md-10">
-                <input type="submit" value="Rendben" class="btn btn-primary">
+                <input type="submit" value="Rendben" class="btn btn-primary" {% if not user.userdetail.systemuser %} disabled {% endif %}>
             </div>
         </div>
     </form>
@@ -101,8 +107,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger">
-                        Az itt beállított kulcsok minden páros percben kerülnek érvényesítésre. <b>Ezért érdemes a beállítás után 2 percet várni</b>, majd azután csatlakozással próbálkozni. Minden felhasználó maximum {{ maxkeynum }} db SSH - RSA kulcsot adhat meg!
+                    <div class="alert alert-danger" style="text-align: justify">
+                        Az itt beállított kulcsok minden páros percben kerülnek érvényesítésre. <b>Ezért érdemes a beállítás után 2 percet várni</b>, majd azután csatlakozással próbálkozni. Minden felhasználó maximum {{ maxkeynum }} db SSH - RSA kulcsot adhat meg! Ha ezen felül szeretne kulcsokat használni, kérje meg erre az egyik admin felhasználót, vagy törölje a ritkán használtakat.
                     </div>
                     <ul class="list-group">
                         <li class="list-group-item"><button type="button" class="btn me-3"><i class="bi bi-justify"></i></button>Részletek megnyitása</li>
