@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from users.forms import SystemUserForm
-from users.models import UserDetail
+from users.models import UserDetail, SystemUser
 
 
 @login_required
@@ -33,4 +33,6 @@ def systemuser(request):
             return HttpResponseRedirect(f'/systemuser?cmd={cmd}')
     else:
         form = SystemUserForm()
-    return render(request, 'users/systemuser.html', { 'form': form, 'cmd': cmd})
+
+    systemusers = SystemUser.objects.all()
+    return render(request, 'users/systemuser.html', { 'form': form, 'cmd': cmd, 'systemusers': systemusers})
