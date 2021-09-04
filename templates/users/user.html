@@ -13,9 +13,23 @@
 {% block content %}
     <h1>User details</h1>
     <table>
-        <tr><th>Username: </th><td>{{ user.username }}</td></tr>
-        <tr><th>Superuser: </th><td>{{ user.is_superuser }}</td></tr>
+        <tr><th>Felhasználói név: </th><td>{{ user.username }}</td></tr>
+        <tr><th>Web Admin jogok: </th><td>{{ user.is_superuser }}</td></tr>
         <tr><th>Neptun: </th><td>{{ userdetail.neptun }}</td></tr>
-        <tr><th>Systemuser: </th><td>{{ userdetail.systemuser }}</td></tr>
+        {% if userdetail.systemuser %}
+            <tr>
+                <th>Rendszerfelhasználó: </th>
+                <td>{{ userdetail.systemuser }}</td>
+            </tr>
+            <tr>
+                <th>Root: </th>
+                <td>{{ userdetail.issudo }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <th>Systemuser: </th>
+                <td>Nincs rendszerfelhasználóhoz adva</td>
+            </tr>
+        {% endif %}
     </table>
 {% endblock %}
