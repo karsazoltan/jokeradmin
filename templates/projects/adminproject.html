@@ -24,23 +24,38 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-sm-4">
-            <h2>Projektek szerkesztése</h2>
+            <h2 id="pagi">Projektek</h2>
         </div>
-        <div class="col-sm-8">
-            <div class="float-end">
-                <div class="input-group">
-                    <div class="form-outline">
-                        <input type="search" id="form1" placeholder="Felhasználói név" class="form-control" />
+        <div class="col-sm-3">
+            <div class="container-fluid">
+                <div class="float-sm-start">
+                    <div class="input-group my-1">
+                        <button id="btn-start" type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
+                        <button id="btn-prev" type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
+                        <button id="btn-next" type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
+                        <button id="btn-end" type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
                     </div>
-                    <button type="button" class="btn btn-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="container-fluid">
+                <div class="float-sm-end">
+                    <div class="input-group my-1">
+                        <div class="form-outline">
+                            <input type="search" id="search" placeholder="Felhasználói név" class="form-control" value="{{ filter }}"  />
+                        </div>
+                        <button type="button"  class="btn btn-primary" onclick="search()"><i class="bi bi-search"></i></button>
+                        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#help"><i class="bi bi-question-square"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
     <div id="userprojects">
         {% for p in projects %}
             <div class="card my-3">
@@ -189,6 +204,15 @@ bekezdés1 [link](https://google.com)</textarea>
         });
         {% if form.is_bound %}
             $(window).on("load", goToId);
+        {% endif %}
+
+        let pagination = new Pagination({{ page }}, {{ maxpage }}, "{{ filter }}", "{% url 'adminprojects' %}");
+        function search() {
+            pagination.filter = $('#search').val();
+            pagination.start();
+        }
+        {% if pagination %}
+            $(window).on("load", goToId("#pagi"));
         {% endif %}
     </script>
 {% endblock %}

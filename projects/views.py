@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
@@ -25,8 +26,22 @@ def projects(request):
 
 @login_required
 def adminprojects(request):
-    projects = Project.objects.all()
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    pagination = False
+    userfilter = ''
+    if request.GET.get('search'):
+        pagination = True
+        userfilter = request.GET.get('search')
+    allprojects = Project.objects.filter(owner__username__contains=userfilter).order_by('-create_date')
     users = get_user_model().objects.all()
+    paginator = Paginator(allprojects, 5)
+    page_number = 1
+    if request.GET.get('page'):
+        pagination = True
+        page_number = request.GET.get('page')
+    projects = paginator.get_page(page_number)
+
     if request.method == 'POST':
         form = AdminProjectForm(request.POST)
         if form.is_valid():
@@ -35,7 +50,8 @@ def adminprojects(request):
     else:
         form = AdminProjectForm()
     return render(request, 'projects/adminproject.html',
-                  {'form': form, 'projects': projects, 'users': users})
+                  {'form': form, 'projects': projects, 'users': users,
+                   'page': page_number, 'maxpage': paginator.num_pages, 'filter': userfilter, 'pagination': pagination})
 
 
 @login_required
