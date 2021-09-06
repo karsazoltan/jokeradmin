@@ -27,7 +27,8 @@ def edituser(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
-    return render(request, 'users/edituser.html', { 'user': user })
+    systemusers = SystemUser.objects.all()
+    return render(request, 'users/edituser.html', { 'user': user, 'systemusers':systemusers })
 
 @login_required
 def systemuser(request):

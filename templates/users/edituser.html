@@ -38,4 +38,28 @@
         {% endif %}
     </table>
     <h2>Szerkesztés</h2>
+    <h3>Társítás másik rendszer felhasználóhoz</h3>
+    <form action="{% url 'edituser' user.id%}" method="post" id="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="form-group row">
+            <label for="systemuser" class="col-md-2 col-form-label">Rendszer felhasználó neve:</label>
+            <div class="col-md-4">
+                <select class="form-control" id="systemuser">
+                    {% for sysuser in systemusers %}
+                        <option {% if sysuser == user.userdetail.systemuser %}selected="selected"{% endif %}>{{ sysuser.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Ok" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
 {% endblock %}

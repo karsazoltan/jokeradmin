@@ -44,17 +44,22 @@
     <div class="card-columns">
         {% for user in systemusers %}
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        {{ user.username }}
+                <div class="card-header">
+                    <b>{{ user.username }}</b>
                         {% if user.issudo %}
                             (superuser)
                         {% endif %}
-                    </h5>
+                </div>
+                <div class="card-body">
                     Csatolt felhasználói fiókok:
-                    <ul>
+                    <ul class="list-group">
                         {% for webuser in user.userdetail_set.all %}
-                            <li>{{  webuser.user.username }} <a href="{% url 'edituser' webuser.id %}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a> </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{  webuser.user.username }}
+                                <span><a href="{% url 'edituser' webuser.id %}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a></span>
+                            </li>
+                        {% empty %}
+                            <i>még nincs társítva</i>
                         {% endfor %}
                     </ul>
                 </div>
