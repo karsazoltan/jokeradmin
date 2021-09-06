@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Felhasználó szerkesztése</h1>
+    <h2>Adatok</h2>
+    <table>
+        <tr><th>Felhasználói név: </th><td>{{ user.username }}</td></tr>
+        <tr><th>Web Admin jogok: </th><td>{{ user.is_superuser }}</td></tr>
+        {% if user.userdetail %}
+            <tr><th>Neptun: </th><td>{{ user.userdetail.neptun }}</td></tr>
+            {% if user.userdetail.systemuser %}
+                <tr>
+                    <th>Rendszerfelhasználó: </th>
+                    <td>{{ user.userdetail.systemuser }}</td>
+                </tr>
+                <tr>
+                    <th>Root: </th>
+                    <td>{{ user.userdetail.issudo }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <th>Systemuser: </th>
+                    <td>Nincs rendszerfelhasználóhoz adva</td>
+                </tr>
+            {% endif %}
+        {% else %}
+            <tr><th>Neptun: </th><td>További adatok nincsenek</td></tr>
+        {% endif %}
+    </table>
+    <h2>Szerkesztés</h2>
+{% endblock %}

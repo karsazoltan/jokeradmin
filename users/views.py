@@ -1,5 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -21,7 +22,14 @@ def registration(request):
 
     return render(request, 'users/registration.html')
 
+@login_required
+def edituser(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    user = get_user_model().objects.get(pk=id)
+    return render(request, 'users/edituser.html', { 'user': user })
 
+@login_required
 def systemuser(request):
     cmd = ''
     if request.GET.get('cmd'):
