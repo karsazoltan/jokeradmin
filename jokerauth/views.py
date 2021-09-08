@@ -16,7 +16,7 @@ def sshkey(request):
         form = SSHKeyForm(request.POST, request=request)
         if form.is_valid():
             form.newKey(request.user)
-            return HttpResponseRedirect('/sshkeys#form')
+            return HttpResponseRedirect('/sshkeys')
     else:
         form = SSHKeyForm(request=request)
     return render(request, 'jokerauth/sshkeys.html', {'form': form, 'keys': keys, 'maxkeynum': MAXKEYNUM})

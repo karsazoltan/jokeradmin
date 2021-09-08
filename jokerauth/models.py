@@ -17,10 +17,10 @@ class SSHKey(models.Model):
         else:
             self.active = False
         self.save()
-        keys = SSHKey.objects.filter(user=self.user).filter(active=True)
-        savekeys(keys, self.user)
+        keys = SSHKey.objects.filter(user__userdetail__systemuser_id=self.user.userdetail.systemuser.id).filter(active=True)
+        savekeys(keys, self.user.userdetail.systemuser)
 
     def deleteit(self):
         self.delete()
-        keys = SSHKey.objects.filter(user=self.user).filter(active=True)
-        savekeys(keys, self.user)
+        keys = SSHKey.objects.filter(user__userdetail__systemuser_id=self.user.userdetail.systemuser.id).filter(active=True)
+        savekeys(keys, self.user.userdetail.systemuser)

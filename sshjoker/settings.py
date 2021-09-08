@@ -19,7 +19,8 @@ KEYDIR = ''
 
 MAXKEYNUM = 5
 
-ROOT_GROUP = 'root'
+ROOT_GROUP = 'adm'
+#ROOT_GROUP = 'root'
 #ROOT_GROUP = 'wheel'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

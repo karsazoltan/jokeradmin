@@ -91,11 +91,6 @@
             </div>
         </div>
     </form>
-    <script>
-        {% if form.is_bound %}
-            $(window).on("load", goToId);
-        {% endif %}
-    </script>
     <!-- Modal -->
     <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -120,4 +115,9 @@
             </div>
         </div>
     </div>
+    <script>
+        {% if form.is_bound %}
+            $(window).on("load", goToId("#form"));
+        {% endif %}
+    </script>
 {% endblock %}

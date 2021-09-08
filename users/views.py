@@ -30,8 +30,19 @@ def edituser(request, id):
     systemusers = SystemUser.objects.all()
     return render(request, 'users/edituser.html', { 'user': user, 'systemusers':systemusers })
 
+
+@login_required
+def users(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    users = get_user_model().objects.all()
+    return render(request, 'users/users.html', { 'users': users })
+
+
 @login_required
 def systemuser(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     cmd = ''
     if request.GET.get('cmd'):
         cmd = request.GET.get('cmd')

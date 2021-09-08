@@ -22,6 +22,8 @@ class SSHKeyForm(forms.Form):
             systemuser = self.request.user.userdetail.systemuser
         except:
             raise ValidationError("A fiókhoz még nem tartozik társított rendszerfelhasználó (linux user). Kérje meg az egyik admin felhasználót, hogy állítsa be. ")
+        if self.cleaned_data['pubkey'].count('ssh-rsa') != 1:
+            raise ValidationError("Vagy több kulcs található benne, vagy nem tartalmaz érvényes ssh-rsa kulcsot.")
 
     def newKey(self, user):
         newkey = SSHKey(user=user, active=False, comment=self.cleaned_data['comment'], pubkey=self.cleaned_data['pubkey'])

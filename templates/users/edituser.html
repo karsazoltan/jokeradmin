@@ -39,6 +39,9 @@
     </table>
     <h2>Szerkesztés</h2>
     <h3>Társítás másik rendszer felhasználóhoz</h3>
+    <div class="alert alert-danger" style="text-align: justify">
+       A felhasználó cseréjével az ssh kulcsok is az új linux felhasználóhoz fognak kerülni! Annak érvényességre jutása kb. 2 perc. Vigyázzon, ne társítson superuser felhasználót egy kevésbé ismert webes felhasználóhoz!
+    </div>
     <form action="{% url 'edituser' user.id%}" method="post" id="form">
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -53,7 +56,7 @@
             <div class="col-md-4">
                 <select class="form-control" id="systemuser">
                     {% for sysuser in systemusers %}
-                        <option {% if sysuser == user.userdetail.systemuser %}selected="selected"{% endif %}>{{ sysuser.username }}</option>
+                        <option value="{{ sysuser.username }}" {% if sysuser == user.userdetail.systemuser %}selected="selected"{% endif %}>{{ sysuser.username }} {% if sysuser.issudo %}(root){% endif %}</option>
                     {% endfor %}
                 </select>
             </div>
