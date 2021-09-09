@@ -13,7 +13,7 @@
 {% block content %}
     <div class="row">
         <div class="col-sm-8">
-            <h1>Aktív webes felhasználók</h1>
+            <h1>Inaktív felhasználók kezelése</h1>
         </div>
         <div class="col-sm-4">
             <div class="float-end">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    Csatolt rendszer felhasználó: <br> <i>{{ user.userdetail.systemuser }}</i>
+                    {{ user.userdetail.neptun }} / {{ user.email }}
                 </div>
             </div>
         {% endfor %}

@@ -14,18 +14,19 @@
     <h1>Felhasználó szerkesztése</h1>
     <h2>Adatok</h2>
     <table>
-        <tr><th>Felhasználói név: </th><td>{{ user.username }}</td></tr>
-        <tr><th>Web Admin jogok: </th><td>{{ user.is_superuser }}</td></tr>
-        {% if user.userdetail %}
-            <tr><th>Neptun: </th><td>{{ user.userdetail.neptun }}</td></tr>
-            {% if user.userdetail.systemuser %}
+        <tr><th>Felhasználói név: </th><td>{{ userinfo.username }}</td></tr>
+        <tr><th>Aktív: </th><td>{{ userinfo.is_active }}</td></tr>
+        <tr><th>Web Admin jogok: </th><td>{{ userinfo.is_superuser }}</td></tr>
+        {% if userinfo.userdetail %}
+            <tr><th>Neptun: </th><td>{{ userinfo.userdetail.neptun }}</td></tr>
+            {% if userinfo.userdetail.systemuser %}
                 <tr>
                     <th>Rendszerfelhasználó: </th>
-                    <td>{{ user.userdetail.systemuser }}</td>
+                    <td>{{ userinfo.userdetail.systemuser }}</td>
                 </tr>
                 <tr>
                     <th>Root: </th>
-                    <td>{{ user.userdetail.issudo }}</td>
+                    <td>{{ userinfo.userdetail.issudo }}</td>
                 </tr>
             {% else %}
                 <tr>
@@ -37,12 +38,11 @@
             <tr><th>Neptun: </th><td>További adatok nincsenek</td></tr>
         {% endif %}
     </table>
-    <h2>Szerkesztés</h2>
-    <h3>Társítás másik rendszer felhasználóhoz</h3>
+    <h3>Rendszer felhasználó beállítása</h3>
     <div class="alert alert-danger" style="text-align: justify">
        A felhasználó cseréjével az ssh kulcsok is az új linux felhasználóhoz fognak kerülni! Annak érvényességre jutása kb. 2 perc. Vigyázzon, ne társítson superuser felhasználót egy kevésbé ismert webes felhasználóhoz!
     </div>
-    <form action="{% url 'edituser' user.id%}" method="post" id="form">
+    <form action="{% url 'edituser' userinfo.id%}" method="post" id="form">
         {% csrf_token %}
         {% if form.non_field_errors %}
             <ul class='list-group py-3'>
@@ -54,7 +54,10 @@
         <div class="form-group row">
             <label for="systemuser" class="col-md-2 col-form-label">Rendszer felhasználó neve:</label>
             <div class="col-md-4">
-                <select class="form-control" id="systemuser">
+                <select class="form-control" id="id_systemuser" name="systemuser">
+                    {% if not userinfo.userdetail.systemuser %}
+                        <option value="" selected disabled>--</option>
+                    {% endif %}
                     {% for sysuser in systemusers %}
                         <option value="{{ sysuser.username }}" {% if sysuser == user.userdetail.systemuser %}selected="selected"{% endif %}>{{ sysuser.username }} {% if sysuser.issudo %}(root){% endif %}</option>
                     {% endfor %}
@@ -65,4 +68,14 @@
             </div>
         </div>
     </form>
+    {% if not userinfo.is_active %}
+        <h3>Aktiválás</h3>
+        {% if userinfo.userdetail.systemuser %}
+            <a href="{% url 'activateuser' userinfo.id %}"><button type="button" class="btn btn-success">Aktiválás</button></a>
+        {% else %}
+            <div class="alert alert-danger" style="text-align: justify">
+                Ameddig nincs rendszer felhasználóhoz társítva, nem aktiválható!
+            </div>
+        {% endif %}
+    {% endif %}
 {% endblock %}

@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
-from users.forms import SystemUserForm
+from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm
 from users.models import UserDetail, SystemUser
 
 
@@ -19,8 +20,17 @@ def userpage(request):
 
 
 def registration(request):
+    regok = False
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.createUser()
+            regok = True
+            return render(request, 'users/registration.html', {'regok': regok, 'form': form})
+    else:
+        form = RegistrationForm()
+    return render(request, 'users/registration.html', {'regok': regok, 'form': form})
 
-    return render(request, 'users/registration.html')
 
 @login_required
 def edituser(request, id):
@@ -28,14 +38,30 @@ def edituser(request, id):
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
     systemusers = SystemUser.objects.all()
-    return render(request, 'users/edituser.html', { 'user': user, 'systemusers':systemusers })
+    if request.method == 'POST':
+        form = SetSysUserForm(request.POST, user=user)
+        if form.is_valid():
+            form.setSysUser()
+            return HttpResponseRedirect(f'/edituser/{id}')
+    else:
+        form = SetSysUserForm()
+    return render(request, 'users/edituser.html', { 'userinfo': user, 'systemusers':systemusers, 'form': form })
+
+@login_required
+def activateuser(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    user = get_user_model().objects.get(pk=id)
+    user.is_active = True
+    user.save()
+    return HttpResponseRedirect(f'/edituser/{id}')
 
 
 @login_required
 def users(request):
     if not request.user.is_superuser:
         raise PermissionDenied
-    users = get_user_model().objects.all()
+    users = get_user_model().objects.filter(is_active=True)
     return render(request, 'users/users.html', { 'users': users })
 
 
@@ -56,3 +82,11 @@ def systemuser(request):
 
     systemusers = SystemUser.objects.all()
     return render(request, 'users/systemuser.html', { 'form': form, 'cmd': cmd, 'systemusers': systemusers})
+
+
+@login_required
+def inactiveusers(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    users = User.objects.filter(is_active=False)
+    return render(request, 'users/inactiveusers.html', { 'users': users } )

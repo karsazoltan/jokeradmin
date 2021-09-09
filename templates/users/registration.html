@@ -14,5 +14,49 @@
 
 {% block content %}
 <h1>Hozzáférés kérése</h1>
-
+    {% if regok %}
+        <div class="alert alert-success" role="alert">
+           Regisztrációs kérelem elküldve! Belépni csak akkor tud, ha egy admin felhasználó jóváhagyta a kérést!
+        </div>
+    {% endif %}
+    <form action="{% url 'registration' %}" method="post" id="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="id_comment">Felhasználói név:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="text" name="username" maxlength="40" required="" id="id_username" placeholder="Felhasználói név">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_pubkey" class="col-md-2 col-form-label">Email-cím:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="email" name="email" maxlength="80" required="" id="id_email" placeholder="Email cím">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_pubkey" class="col-md-2 col-form-label">Neptun kód:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="text" name="neptun" maxlength="6" required="" id="id_neptun" placeholder="NEPTUN">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_pubkey" class="col-md-2 col-form-label">Jelszó:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="password" name="password" required="" id="id_password" placeholder="Jelszó">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <input type="submit" value="Kérelem elküldése" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
 {% endblock %}
