@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}{{ userinfo.username }}{% endblock %}
 
 {% block navbar %}
     {% if user.is_authenticated %}
@@ -54,9 +54,9 @@
         <div class="form-group row">
             <label for="systemuser" class="col-md-2 col-form-label">Rendszer felhasználó neve:</label>
             <div class="col-md-4">
-                <select class="form-control" id="id_systemuser" name="systemuser">
+                <select class="form-control" id="id_systemuser" name="systemuser" autocomplete="off">
                     {% if not userinfo.userdetail.systemuser %}
-                        <option value="" selected disabled>--</option>
+                        <option value="--" selected disabled>--</option>
                     {% endif %}
                     {% for sysuser in systemusers %}
                         <option value="{{ sysuser.username }}" {% if sysuser == user.userdetail.systemuser %}selected="selected"{% endif %}>{{ sysuser.username }} {% if sysuser.issudo %}(root){% endif %}</option>
@@ -78,4 +78,15 @@
             </div>
         {% endif %}
     {% endif %}
+   <script>
+    function selectElement(id, valueToSelect) {
+        let element = document.getElementById(id);
+        element.value = valueToSelect;
+    }
+    {% if not userinfo.userdetail.systemuser %}
+        selectElement('id_systemuser', '--')
+    {% else %}
+        selectElement('id_systemuser', '{{ userinfo.userdetail.systemuser }}')
+    {% endif %}
+   </script>
 {% endblock %}
