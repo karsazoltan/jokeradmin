@@ -27,7 +27,7 @@
     {% if cmd %}
         <div class="alert alert-success" role="alert">
             <h1 class="alert-heading">Bash parancs</h1>
-            <p>Még automatikusan nem kerül hozzáadásra a felhasználó, futassa az alábbi parancsot a user felvételéhez</p>
+            <p>A felhasználó hozzá lett adva a következő paranccsal:</p>
             <hr>
             <p style="font-family: Consolas, Monaco">{{ cmd }}</p>
         </div>
@@ -41,15 +41,18 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="form-group row">
-            <label for="user" class="col-md-2 col-form-label">Rendszerfelhasználó neve:</label>
-            <div class="col-md-4">
-                <input class="form-control autocomplete" id="id_username" type="text" name="username">
+        <div class="form-inline">
+            <div class="form-group mb-2">
+                <label for="user" class="sr-only">Rendszer felhasználó neve:</label>
+                <input class="form-control autocomplete" id="id_username" type="text" name="username" placeholder="Rendszer felhasználó neve">
             </div>
-            <div class="col-md-2">
+            <div class="form-group mx-sm-3 mb-2">
                 <input type="submit" value="Felvétel" class="btn btn-primary">
             </div>
         </div>
+        <small id="passwordHelpBlock" class="form-text text-muted">
+            A felhasználó linux user-ként hozzáadásra kerül, társítson hozzá webes felhasználót a késöbbi bejelentkezéshez.
+        </small>
     </form>
     <h2>Rendszerfelhasználók</h2>
     <div class="card-columns">
@@ -65,7 +68,7 @@
                     Csatolt felhasználói fiókok:
                     <ul class="list-group">
                         {% for webuser in user.userdetail_set.all %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-top">
                                 {{  webuser.user.username }}
                                 <span><a href="{% url 'edituser' webuser.id %}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a></span>
                             </li>

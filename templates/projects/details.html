@@ -37,15 +37,18 @@
                     {% endfor %}
                  </ul>
             {% endif %}
-            <div class="form-group row">
-                <label for="user" class="col-md-2 col-form-label">Partner felhasználói neve:</label>
-                <div class="col-md-4">
-                    <input class="form-control autocomplete" id="user" type="text" name="user">
+            <div class="form-inline">
+                <div class="form-group mb-2">
+                    <label for="user" class="sr-only">Partner felhasználói neve:</label>
+                    <input class="form-control autocomplete" id="user" type="text" name="user" placeholder="Felhasználói név">
                 </div>
-                <div class="col-md-2">
+                <div class="form-group mx-sm-3 mb-2">
                     <input type="submit" value="Felvétel" class="btn btn-primary">
                 </div>
             </div>
+            <small id="passwordHelpBlock" class="form-text text-muted">
+                Kezdje el gépelni a felhasználó nevét, majd a szűrt listából válassza ki a megfelelőt.
+            </small>
         </form>
         <h3>Partner eltávolítása a projektből</h3>
         <div class="card-deck">
@@ -67,11 +70,13 @@
                         Email: {{ p.email }}
                     </div>
                 </div>
+            {% empty %}
+                <p><i>Nincs partnere ennek a projektnek.</i></p>
             {% endfor %}
         </div>
         <h3>Projekt törlése</h3>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+        <button type="button" class="btn btn-danger m-2" data-toggle="modal" data-target="#deleteModal">
             Törlés
         </button>
 

@@ -23,6 +23,8 @@ ROOT_GROUP = 'adm'
 #ROOT_GROUP = 'root'
 #ROOT_GROUP = 'wheel'
 
+HOME_DIRECTORY = '/home1/'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

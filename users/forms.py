@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from jokerauth.models import SSHKey
 from jokerauth.service import savekeys
 from users.models import SystemUser, UserDetail
+from users.service import adduser
 
 
 class RegistrationForm(forms.Form):
@@ -42,6 +43,7 @@ class SystemUserForm(forms.Form):
     def newSystemUser(self):
         newSystemUser = SystemUser(username=self.cleaned_data['username'])
         newSystemUser.save()
+        adduser(self.cleaned_data['username'])
         return newSystemUser.bashcmd()
 
 
