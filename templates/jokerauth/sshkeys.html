@@ -13,7 +13,14 @@
 {% block content %}
     <h1>SSH Kulcsok</h1>
     {% if user.userdetail.systemuser %}
-        <p><b>Joker rendszernév: </b><i>{{ user.userdetail.systemuser }}</i> - ezen felhasználóhoz csatoljuk a kulcsot.</p>
+        <p><b>HPC társított fiókok: </b><i>
+            {% for sysuser in user.userdetail.systemuser.all %}
+                {{ sysuser }}{% if sysuser.issudo %}(root){% endif %},
+            {% endfor %}
+        </i></p>
+        <div class="alert alert-danger">
+            A fenti linux felhasználók nevei alatt tud bejelentkezni a hpc központi gépére, a lent megadott ssh kulcsok segítségével.
+        </div>
     {% else %}
         <div class="alert alert-danger">
             A fiókhoz még nem tartozik társított rendszerfelhasználó (linux user). Kérje meg az egyik admin felhasználót, hogy állítsa be.

@@ -7,7 +7,7 @@ from jokerauth.service import *
 class SSHKey(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     create_date = models.DateTimeField(default=timezone.now)
-    pubkey = models.TextField(unique=True)
+    pubkey = models.TextField(unique=False)
     active = models.BooleanField()
     comment = models.CharField(max_length=100, null=True)
 
@@ -17,10 +17,12 @@ class SSHKey(models.Model):
         else:
             self.active = False
         self.save()
-        keys = SSHKey.objects.filter(user__userdetail__systemuser_id=self.user.userdetail.systemuser.id).filter(active=True)
-        savekeys(keys, self.user.userdetail.systemuser)
+        for sysuser in self.user.userdetail.systemuser.all():
+            keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+            savekeys(keys, sysuser)
 
     def deleteit(self):
         self.delete()
-        keys = SSHKey.objects.filter(user__userdetail__systemuser_id=self.user.userdetail.systemuser.id).filter(active=True)
-        savekeys(keys, self.user.userdetail.systemuser)
+        for sysuser in self.user.userdetail.systemuser.all():
+            keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+            savekeys(keys, sysuser)

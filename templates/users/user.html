@@ -18,12 +18,10 @@
         <tr><th>Neptun: </th><td>{{ userdetail.neptun }}</td></tr>
         {% if userdetail.systemuser %}
             <tr>
-                <th>Rendszerfelhasználó: </th>
-                <td>{{ userdetail.systemuser }}</td>
-            </tr>
-            <tr>
-                <th>Root: </th>
-                <td>{{ userdetail.issudo }}</td>
+                <th>A következő hpc felhasználókhoz társítva: </th>
+                <td>{% for sysuser in user.userdetail.systemuser.all %}
+                {{ sysuser }}{% if sysuser.issudo %}(root){% endif %},
+            {% endfor %}</td>
             </tr>
         {% else %}
             <tr>

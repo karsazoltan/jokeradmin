@@ -5,7 +5,7 @@ from users.service import issudo
 
 class UserDetail(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, null=False)
-    systemuser = models.ForeignKey('SystemUser', on_delete=models.CASCADE, null=True)
+    systemuser = models.ManyToManyField('SystemUser', related_name='webusers')
     neptun = models.CharField(max_length=6, null=False, default='N3PTUN', unique=True)
 
     def issudo(self):

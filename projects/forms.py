@@ -44,7 +44,7 @@ class AdminProjectForm(forms.Form):
         return self.cleaned_data
 
     def newProject(self):
-        owner = get_user_model().objects.filter(username__icontains=self.cleaned_data['owner']).get()
+        owner = get_user_model().objects.filter(username=self.cleaned_data['owner']).get()
         newproject = Project(
             owner=owner,
             title=self.cleaned_data['title'],
@@ -54,7 +54,7 @@ class AdminProjectForm(forms.Form):
         partnersusername = self.cleaned_data['partners'].split(',')
         for partnername in partnersusername:
             if partnername != "":
-                partner = get_user_model().objects.filter(username__icontains=partnername.strip()).get()
+                partner = get_user_model().objects.filter(username=partnername.strip()).get()
                 newproject.users.add(partner)
         newproject.save()
 
@@ -66,7 +66,7 @@ class AddPartnerForm(forms.Form):
         super(AddPartnerForm, self).__init__(*args, **kwargs)
 
     def clean(self):
-        user = get_user_model().objects.filter(username__icontains=self.cleaned_data['user'])
+        user = get_user_model().objects.filter(username=self.cleaned_data['user'])
         if user.count() == 0:
             raise ValidationError("Nincs ilyen felhasználó: " + self.cleaned_data['user'])
         if user.get() == self.request.user:
@@ -74,5 +74,5 @@ class AddPartnerForm(forms.Form):
         return self.cleaned_data
 
     def addpartner(self, project):
-        user = get_user_model().objects.filter(username__icontains=self.cleaned_data['user']).get()
+        user = get_user_model().objects.filter(username=self.cleaned_data['user']).get()
         project.users.add(user)

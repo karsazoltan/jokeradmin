@@ -61,10 +61,10 @@ class SetSysUserForm(forms.Form):
 
     def setSysUser(self):
         old = self.user.userdetail.systemuser
-        self.user.userdetail.systemuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).get()
+        self.user.userdetail.systemuser.add(SystemUser.objects.filter(username=self.cleaned_data['systemuser']).get())
         self.user.userdetail.save()
         if old:
-            keys = SSHKey.objects.filter(user__userdetail__systemuser_id=old.id).filter(active=True)
+            keys = SSHKey.objects.filter(user__userdetail__systemuser__in=old.id).filter(active=True)
             savekeys(keys, old)
-        keys = SSHKey.objects.filter(user__userdetail__systemuser_id=self.user.userdetail.systemuser.id).filter(active=True)
+        keys = SSHKey.objects.filter(user__userdetail__systemuser__in=self.user.userdetail.systemuser.id).filter(active=True)
         savekeys(keys, self.user.userdetail.systemuser)

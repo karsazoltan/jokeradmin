@@ -21,12 +21,8 @@
             <tr><th>Neptun: </th><td>{{ userinfo.userdetail.neptun }}</td></tr>
             {% if userinfo.userdetail.systemuser %}
                 <tr>
-                    <th>Rendszerfelhasználó: </th>
-                    <td>{{ userinfo.userdetail.systemuser }}</td>
-                </tr>
-                <tr>
-                    <th>Root: </th>
-                    <td>{{ userinfo.userdetail.issudo }}</td>
+                    <th>A következő hpc felhasználókhoz társítva: </th>
+                    <td>{% for sysuser in userinfo.userdetail.systemuser.all %}{{ sysuser }}{% if sysuser.issudo %}(root){% endif %}, {% endfor %}</td>
                 </tr>
             {% else %}
                 <tr>
@@ -38,7 +34,7 @@
             <tr><th>Neptun: </th><td>További adatok nincsenek</td></tr>
         {% endif %}
     </table>
-    <h3>Rendszer felhasználó beállítása</h3>
+    <h3>Linux felhasználó társítása</h3>
     <div class="alert alert-danger" style="text-align: justify">
        A felhasználó cseréjével az ssh kulcsok is az új linux felhasználóhoz fognak kerülni! Annak érvényességre jutása kb. 2 perc. Vigyázzon, ne társítson superuser felhasználót egy kevésbé ismert webes felhasználóhoz!
     </div>
@@ -52,10 +48,10 @@
             </ul>
         {% endif %}
         <div class="form-inline">
-            <label for="id_systemuser" class="sr-only">Rendszer felhasználó neve</label>
+            <label for="id_systemuser" class="sr-only">Linux felhasználók társítása</label>
             <div class="form-group mb-2">
                 <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="bi bi-person-lines-fill"></i></div>
+                    <div class="input-group-text"><i class="bi bi-person-plus"></i></div>
                 </div>
                 <select class="input-group custom-select" id="id_systemuser" name="systemuser" autocomplete="off">
                         {% if not userinfo.userdetail.systemuser %}
@@ -67,10 +63,34 @@
                 </select>
             </div>
             <div class="form-group mx-sm-3 mb-2">
-                <input type="submit" value="Ok" class="btn btn-primary">
+                <input type="submit" value="Társítás" class="btn btn-primary">
             </div>
         </div>
     </form>
+    <h3>Társított linux felhasználók</h3>
+    <div class="card-deck">
+        {% for sysuser in userinfo.userdetail.systemuser.all%}
+            <div class="card">
+                <div class="card-header container-fluid">
+                    <div class="row">
+                        <div class="col-9">
+                            <h5>{{ sysuser }}</h5>
+                        </div>
+                        <div class="col-3">
+                            <div class="float-end">
+                                <a href="{% url 'deletepartner' userinfo.id sysuser.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Root felhasználó: {{ sysuser.issudo }}
+                </div>
+            </div>
+        {% empty %}
+            <p><i>Nincs társított linux felhasználó.</i></p>
+        {% endfor %}
+    </div>
     {% if not userinfo.is_active %}
         <h3>Aktiválás</h3>
         {% if userinfo.userdetail.systemuser %}
