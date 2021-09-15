@@ -6,6 +6,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
+from jokerauth.models import SSHKey
+from jokerauth.service import savekeys
 from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm
 from users.models import UserDetail, SystemUser
 
@@ -56,6 +58,19 @@ def activateuser(request, id):
     user.save()
     return HttpResponseRedirect(f'/edituser/{id}')
 
+@login_required
+def delete_sysuser_from_user(request, webuser_id, sysuser_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    try:
+        webuser = User.objects.get(pk=webuser_id)
+        sysuser = SystemUser.objects.get(pk=sysuser_id)
+    except ObjectDoesNotExist:
+        raise Http404('Objektum nem található')
+    webuser.userdetail.systemuser.remove(sysuser)
+    keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+    savekeys(keys, sysuser)
+    return HttpResponseRedirect('/edituser/' + str(webuser_id))
 
 @login_required
 def users(request):

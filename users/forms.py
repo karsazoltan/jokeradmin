@@ -60,11 +60,8 @@ class SetSysUserForm(forms.Form):
             raise ValidationError("Nincs ilyen rendszer felhasználó!")
 
     def setSysUser(self):
-        old = self.user.userdetail.systemuser
-        self.user.userdetail.systemuser.add(SystemUser.objects.filter(username=self.cleaned_data['systemuser']).get())
+        sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).get()
+        self.user.userdetail.systemuser.add(sysuser)
         self.user.userdetail.save()
-        if old:
-            keys = SSHKey.objects.filter(user__userdetail__systemuser__in=old.id).filter(active=True)
-            savekeys(keys, old)
-        keys = SSHKey.objects.filter(user__userdetail__systemuser__in=self.user.userdetail.systemuser.id).filter(active=True)
-        savekeys(keys, self.user.userdetail.systemuser)
+        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+        savekeys(keys, sysuser)
