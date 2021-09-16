@@ -47,14 +47,11 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="form-inline">
-            <label for="id_systemuser" class="sr-only">Linux felhasználók társítása</label>
-            <div class="form-group mb-2">
-                <div class="input-group-prepend">
-                    <div class="input-group-text"><i class="bi bi-person-plus"></i></div>
-                </div>
+        <div class="form-group row">
+            <label for="id_systemuser">Linux felhasználó:</label>
+            <div class="form-group col-md-4 mb-0">
                 <select class="input-group custom-select" id="id_systemuser" name="systemuser" autocomplete="off">
-                        {% if not userinfo.userdetail.systemuser %}
+                        {% if not userinfo.userdetail.systemuser.all %}
                             <option value="--" selected disabled>--</option>
                         {% endif %}
                         {% for sysuser in systemusers %}
@@ -62,14 +59,22 @@
                         {% endfor %}
                 </select>
             </div>
-            <div class="form-group mx-sm-3 mb-2">
+        </div>
+        <div class="form-group row">
+            <div class="form-group col-md-2">
                 <input type="submit" value="Társítás" class="btn btn-primary">
+            </div>
+            <div class="form-group col-md-2">
+                <a href="{% url 'systemuser' %}"><button type="button" class="btn btn-info">Új hpc felhasználó</button></a>
             </div>
         </div>
     </form>
     <h3>Társított linux felhasználók</h3>
+    {% if not userinfo.userdetail.systemuser.all %}
+        <p><i>Nincs társított linux felhasználó.</i></p>
+    {% else %}
     <div class="card-deck">
-        {% for sysuser in userinfo.userdetail.systemuser.all%}
+        {% for sysuser in userinfo.userdetail.systemuser.all %}
             <div class="card">
                 <div class="card-header container-fluid">
                     <div class="row">
@@ -87,17 +92,16 @@
                     Root felhasználó: {{ sysuser.issudo }}
                 </div>
             </div>
-        {% empty %}
-            <p><i>Nincs társított linux felhasználó.</i></p>
         {% endfor %}
     </div>
+    {% endif %}
     {% if not userinfo.is_active %}
         <h3>Aktiválás</h3>
-        {% if userinfo.userdetail.systemuser %}
+        {% if userinfo.userdetail.systemuser.all %}
             <a href="{% url 'activateuser' userinfo.id %}"><button type="button" class="btn btn-success">Aktiválás</button></a>
         {% else %}
             <div class="alert alert-danger" style="text-align: justify">
-                Ameddig nincs felhasználóhoz társítva, nem aktiválható!
+                Ameddig nincs legalább egy linux felhasználóhoz társítva, nem aktiválható!
             </div>
         {% endif %}
     {% endif %}
@@ -106,7 +110,7 @@
         let element = document.getElementById(id);
         element.value = valueToSelect;
     }
-    {% if not userinfo.userdetail.systemuser %}
+    {% if not userinfo.userdetail.systemuser.all %}
         selectElement('id_systemuser', '--')
     {% else %}
         selectElement('id_systemuser', '{{ userinfo.userdetail.systemuser }}')
