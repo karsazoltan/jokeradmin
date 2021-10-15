@@ -40,14 +40,18 @@ def edituser(request, id):
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
     systemusers = SystemUser.objects.all()
+    prevpage = '/users'
+    if request.GET.get('prev'):
+        prevpage = request.GET.get('prev')
     if request.method == 'POST':
         form = SetSysUserForm(request.POST, user=user)
         if form.is_valid():
             form.setSysUser()
-            return HttpResponseRedirect(f'/edituser/{id}')
+            return HttpResponseRedirect(f'/edituser/{id}?prev={prevpage}')
     else:
         form = SetSysUserForm()
-    return render(request, 'users/edituser.html', { 'userinfo': user, 'systemusers':systemusers, 'form': form })
+    return render(request, 'users/edituser.html', { 'userinfo': user, 'systemusers':systemusers, 'form': form,
+                                                    'prevpage': prevpage })
 
 @login_required
 def activateuser(request, id):

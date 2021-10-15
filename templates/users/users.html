@@ -11,29 +11,18 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-sm-8">
-            <h1>Aktív webes felhasználók</h1>
-        </div>
-        <div class="col-sm-4">
-            <div class="float-end">
-                <div class="alert-danger alert" role="alert">
-                    <h5>ADMIN Oldal</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1>Aktív webes felhasználók</h1>
     <div class="card-columns">
         {% for user in users %}
             <div class="card">
                 <div class="card-header container-fluid">
                     <b>{{ user.username }}</b>
                     <div class="float-end">
-                        <a href="{% url 'edituser' user.id %}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a>
+                        <a href="{% url 'edituser' user.id %}?prev={{ request.path|urlencode }}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a>
                     </div>
                 </div>
                 <div class="card-body">
-                    Csatolt rendszer felhasználók:
+                    Csatolt linux felhasználók:
                     <ul class="list-group">
                         {% for sysuser in user.userdetail.systemuser.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center border-top">
@@ -47,4 +36,13 @@
             </div>
         {% endfor %}
     </div>
+    </div>
+    <div style="height: 100px"></div>
+    <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item link-danger">Admin</li>
+            <li class="breadcrumb-item active" aria-current="page">Webes felhasználók</li>
+            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+        </ol>
+    </nav>
 {% endblock %}

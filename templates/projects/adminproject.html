@@ -12,18 +12,7 @@
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <div class="row">
-        <div class="col-sm-4">
-            <h1>Projektek</h1>
-        </div>
-        <div class="col-sm-8">
-            <div class="float-end">
-                <div class="alert-danger alert" role="alert">
-                    <h5>ADMIN Oldal</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1>Projektek</h1>
 
     <div class="row">
         <div class="col-sm-4">
@@ -139,6 +128,17 @@ bekezdés1 [link](https://google.com)</textarea>
             </div>
         </div>
     </form>
+
+    <div style="height: 100px"></div>
+
+    <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item link-danger">Admin</li>
+            <li class="breadcrumb-item active" aria-current="page">Projektek</li>
+            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+        </ol>
+    </nav>
+
     <script>
         $(document).ready(function () {
             $('#id_description').bind('input propertychange', function() {

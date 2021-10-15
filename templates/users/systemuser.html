@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Rendszerfelhasználók{% endblock %}
+{% block title %}HPC felhasználók{% endblock %}
 
 {% block navbar %}
     {% if user.is_authenticated %}
@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Új rendszer felhasználó hozzáadása</h2>
+    <h2>Új HPC felhasználó hozzáadása</h2>
     {% if cmd %}
         <div class="alert alert-success" role="alert">
             <h1 class="alert-heading">Bash parancs</h1>
@@ -42,7 +42,7 @@
             A felhasználó linux user-ként hozzáadásra kerül, társítson hozzá webes felhasználót a késöbbi bejelentkezéshez.
         </small>
     </form>
-    <h2>Rendszerfelhasználók</h2>
+    <h2>HPC felhasználók</h2>
     <div class="card-columns">
         {% for user in systemusers %}
             <div class="card">
@@ -58,7 +58,7 @@
                         {% for webuser in user.webusers.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center border-top">
                                 {{  webuser.user.username }}
-                                <span><a href="{% url 'edituser' webuser.user.id %}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a></span>
+                                <span><a href="{% url 'edituser' webuser.user.id %}?prev={{ request.path|urlencode }}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a></span>
                             </li>
                         {% empty %}
                             <i>még nincs társítva</i>
@@ -68,12 +68,12 @@
             </div>
         {% endfor %}
     </div>
+    <div style="height: 100px"></div>
+    <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item link-danger">Admin</li>
+            <li class="breadcrumb-item active" aria-current="page">HPC felhasználók</li>
+            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+        </ol>
+    </nav>
 {% endblock %}
-<div style="height: 100px"></div>
-<nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item link-danger">Admin</li>
-        <li class="breadcrumb-item active" aria-current="page">Rendszer felhasználók</li>
-        <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
-    </ol>
-</nav>

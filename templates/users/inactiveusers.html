@@ -11,18 +11,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-sm-8">
-            <h1>Inaktív felhasználók kezelése</h1>
-        </div>
-        <div class="col-sm-4">
-            <div class="float-end">
-                <div class="alert-danger alert" role="alert">
-                    <h5>ADMIN Oldal</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1>Inaktív felhasználók kezelése</h1>
     <div class="card-columns">
         {% for user in users %}
             <div class="card">
@@ -38,4 +27,12 @@
             </div>
         {% endfor %}
     </div>
+    <div style="height: 100px"></div>
+    <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item link-danger">Admin</li>
+            <li class="breadcrumb-item active" aria-current="page">Inaktív felhasználók</li>
+            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+        </ol>
+    </nav>
 {% endblock %}
