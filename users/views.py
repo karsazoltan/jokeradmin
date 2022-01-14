@@ -98,7 +98,6 @@ def systemuser(request):
             return HttpResponseRedirect(f'/systemuser?cmd={cmd}')
     else:
         form = SystemUserForm()
-
     systemusers = SystemUser.objects.all()
     return render(request, 'users/systemuser.html', { 'form': form, 'cmd': cmd, 'systemusers': systemusers})
 

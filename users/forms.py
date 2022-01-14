@@ -36,9 +36,12 @@ class SystemUserForm(forms.Form):
     username = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+', error_messages={ 'invalid': ("Csak betűket és számokat tartalmazhat, maximum 40 karakter")} )
 
     def clean(self):
-        user = SystemUser.objects.filter(username=self.cleaned_data['username'])
-        if user.count() == 1:
-            raise ValidationError("Már van ilyen: " + self.cleaned_data['username'])
+        super().clean()
+        username = self.cleaned_data.get('username')
+        if username:
+            user = SystemUser.objects.filter(username=username)
+            if user.count() == 1:
+                raise ValidationError("Már van ilyen: " + self.cleaned_data['username'])
 
     def newSystemUser(self):
         newSystemUser = SystemUser(username=self.cleaned_data['username'])

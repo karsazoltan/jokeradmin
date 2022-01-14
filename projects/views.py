@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
-from projects.forms import ProjectForm, AddPartnerForm, AdminProjectForm
+from projects.forms import AddPartnerForm, AdminProjectForm
 from projects.models import Project
 
 
@@ -13,15 +13,8 @@ from projects.models import Project
 def projects(request):
     projects = Project.objects.filter(owner=request.user)
     partnerprojects = request.user.projects.all()
-    if request.method == 'POST':
-        form = ProjectForm(request.POST)
-        if form.is_valid():
-            form.newProject(request.user)
-            return HttpResponseRedirect('/projects')
-    else:
-        form = ProjectForm()
     return render(request, 'projects/project.html',
-                  {'form': form, 'projects': projects, 'partnerprojects': partnerprojects })
+                  {'projects': projects, 'partnerprojects': partnerprojects })
 
 
 @login_required

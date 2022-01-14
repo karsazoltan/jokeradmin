@@ -68,10 +68,12 @@
     <h2>Projekt létrehozása</h2>
     <form action="{% url 'adminprojects' %}" method="post" id="form">
         {% csrf_token %}
-        {% if form.non_field_errors %}
+        {% if form.errors %}
             <ul class='list-group py-3'>
-                {% for error in form.non_field_errors %}
-                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                    {% endfor %}
                 {% endfor %}
             </ul>
         {% endif %}
@@ -85,12 +87,20 @@
             <label class="col-md-1 col-form-label" for="id_owner">Tulajdonos:</label>
             <div class="col-md-4">
                 <input type="text" name="owner" class="form-control" maxlength="100" required="" id="id_owner" placeholder="Tulajdonos">
+                <small id="linux_help" class="form-text text-muted">A tulajdonos törölheti a projeketet, szerkesztheti a leírást és tagokat adhat hozzá.</small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-1 col-form-label" for="id_system_user">HPC felhasználó:</label>
+            <div class="col-md-4">
+                <input type="text" name="system_user" class="form-control" maxlength="100" required="" id="id_system_user" placeholder="Linux felhasználó">
+                <small id="linux_help" class="form-text text-muted">A projekt társítva lesz egy linux felhasználóhoz, a projekt tagjai a felhasználói név alatt be tudnak jelentkezni a HPC központi gépére.</small>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-md-1 col-form-label" for="id_partners">Partnerek:</label>
             <div class="col-md-4">
-                <input type="text" name="partners" class="form-control" maxlength="100" required="" aria-describedby="partner_help" id="id_partners" placeholder="Partnerek">
+                <input type="text" name="partners" class="form-control" maxlength="100" aria-describedby="partner_help" id="id_partners" placeholder="Partnerek">
                 <small id="partner_help" class="form-text text-muted">Felhasználók felsorolása vesszővel: </small>
             </div>
         </div>
@@ -142,12 +152,12 @@ bekezdés1 [link](https://google.com)</textarea>
     <script>
         $(document).ready(function () {
             $('#id_description').bind('input propertychange', function() {
-                $('#preview').html(marked($('#id_description').val()))
+                $('#preview').html(marked.parse($('#id_description').val()))
             });
-            $('#preview').html(marked($('#id_description').val()))
+            $('#preview').html(marked.parse($('#id_description').val()))
         })
         {% for p in projects %}
-            document.getElementById('usercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
+            document.getElementById('usercontent{{ p.id }}').innerHTML = marked.parse('{{ p.description | escapejs }}');
         {% endfor %}
         function split( val ) {
             return val.split( /,\s*/ );

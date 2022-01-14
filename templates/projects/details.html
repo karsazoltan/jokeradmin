@@ -13,18 +13,34 @@
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <h1>"{{ project.title }}" projekt</h1>
-    <table class="table">
-        <tr><th>Tulajdonos</th><td>{{ project.owner }}</td></tr>
-        <tr><th>Leírás</th><td id="description">markdown content</td></tr>
-        <tr><th>Publikus</th><td>{{ project.public }}</td></tr>
-        <tr><th>Partnerek</th><td>
-            <ul>
-                {% for user in partners %}
-                    <li>{{ user.username }}</li>
-                {% endfor %}
-            </ul>
-        </td></tr>
-    </table>
+
+    <div class="card bg- mb-3">
+        <div class="card-header"><h5>Adatok</h5></div>
+        <div class="card-body">
+            <div>
+                <table>
+                    <tr><th>Tulajdonos</th><td>{{ project.owner }}</td></tr>
+                    <tr><th>HPC felhasználó</th><td>{{ project.system_user }}</td></tr>
+                    <tr><th>Publikus</th><td>{{ project.public }}</td></tr>
+                    <tr><th>Partnerek</th><td>
+                    <ul>
+                        {% for user in partners %}
+                            <li>{{ user.username }}</li>
+                        {% endfor %}
+                    </ul>
+                    </td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-light mb-3">
+        <div class="card-header"><h5>Leírás</h5></div>
+        <div class="card-body">
+            <div id="description">content</div>
+        </div>
+    </div>
+
     {% if user == project.owner %}
         <h2>Projekt szerkesztése</h2>
         <h3>Partner felhasználó kezelése</h3>
@@ -122,7 +138,7 @@
         </script>
     {% endif %}
     <script>
-            document.getElementById('description').innerHTML = marked('{{ project.description | escapejs }}');
+            document.getElementById('description').innerHTML = marked.parse('{{ project.description | escapejs }}');
             {% if form.is_bound %}
                 $(window).on("load", goToId);
             {% endif %}

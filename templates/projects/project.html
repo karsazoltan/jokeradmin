@@ -11,7 +11,6 @@
 {% endblock %}
 
 {% block content %}
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <h1>Projektek</h1>
     <h2>Saját</h2>
     <div id="userprojects">
@@ -57,61 +56,12 @@
             nincs
         {% endfor %}
     </div>
-    <h2>Projekt létrehozása</h2>
-    <form action="{% url 'projects' %}" method="post" id="form">
-        {% csrf_token %}
-        <div class="form-group row">
-            <label class="col-md-1 col-form-label" for="id_title">Projekt neve:</label>
-            <div class="col-md-4">
-                <input type="text" name="title" class="form-control" maxlength="100" required="" id="id_title" placeholder="Cím">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="id_description" class="col-md-1 col-form-label">Leírás:</label>
-            <div class="col-md-4">
-                <textarea name="description" class="form-control" cols="40" rows="10" maxlength="1000" aria-describedby="help" required="" id="id_description" placeholder="Leírás"># H1
-## h2
-* felsorolás 1
-* felsorolás 2
-*dőlt* sima **vastag**
-
-bekezdés1 [link](https://google.com)</textarea>
-                <small id="help" class="form-text text-muted">Markdown formázás használható: </small>
-            </div>
-            <div class="col-md-7">
-                <div class="card bg-light mb-3">
-                        <div class="card-header"><h5>Leírás előnézet</h5></div>
-                    <div class="card-body">
-                        <div id="preview"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="id_public" class="col-md-1 col-form-label">Publikus:</label>
-            <div class="col-md-11">
-                <input type="checkbox" name="public" aria-describedby="public_help"  id="id_public">
-                <small id="public_help" class="form-text text-muted">A projekt megjelenik a kezdőlapon mindenki számára.</small>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-11">
-                <input type="submit" value="Létrehozás" class="btn btn-primary">
-            </div>
-        </div>
-    </form>
     <script>
-        $(document).ready(function () {
-            $('#id_description').bind('input propertychange', function() {
-                $('#preview').html(marked($('#id_description').val()))
-            });
-            $('#preview').html(marked($('#id_description').val()))
-        })
         {% for p in projects %}
-            document.getElementById('usercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
+            document.getElementById('usercontent{{ p.id }}').innerHTML = marked.parse('{{ p.description | escapejs }}');
         {% endfor %}
         {% for p in partnerprojects %}
-            document.getElementById('partnercontent{{ p.id }}').innerHTML = marked('{{ p.description | escapejs }}');
+            document.getElementById('partnercontent{{ p.id }}').innerHTML = marked.parse('{{ p.description | escapejs }}');
         {% endfor %}
         {% if form.is_bound %}
             $(window).on("load", goToId);
