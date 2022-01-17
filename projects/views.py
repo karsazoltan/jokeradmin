@@ -130,7 +130,7 @@ def deleteproject(request, id):
     except ObjectDoesNotExist:
         raise Http404('Projekt nem található')
     if request.user == project.owner or request.user.is_superuser:
-        for partner in project.users:
+        for partner in project.users.all():
             partner.userdetail.systemuser.remove(project.system_user)
             partner.userdetail.save()
         keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
