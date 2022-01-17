@@ -19,15 +19,21 @@
         <div class="card-body">
             <div>
                 <table>
-                    <tr><th>Tulajdonos</th><td>{{ project.owner }}</td></tr>
-                    <tr><th>HPC felhasználó</th><td>{{ project.system_user }}</td></tr>
+                    <tr><th>Tulajdonos</th><td><h5><span class="badge bg-success">{{ project.owner }}</span></h5></td></tr>
+                    <tr><th>HPC felhasználó</th><td><h5>
+                        {% if project.system_user.issudo %}
+                        <span class="badge bg-danger">{{ project.system_user }}</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">{{ project.system_user }}</span>
+                    {% endif %}
+                    </h5></td></tr>
                     <tr><th>Publikus</th><td>{{ project.public }}</td></tr>
                     <tr><th>Partnerek</th><td>
-                    <ul>
+                    <h5>
                         {% for user in partners %}
-                            <li>{{ user.username }}</li>
+                            <span class="badge bg-primary">{{ user.username }}</span>
                         {% endfor %}
-                    </ul>
+                    </h5>
                     </td></tr>
                 </table>
             </div>
@@ -67,7 +73,7 @@
             </small>
         </form>
         <h3>Partner eltávolítása a projektből</h3>
-        <div class="card-deck">
+        <div class="card-columns">
             {% for p in partners %}
                 <div class="card">
                     <div class="card-header container-fluid">

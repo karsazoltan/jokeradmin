@@ -48,8 +48,9 @@
             <div class="card my-3">
                 <div class="card-header container-fluid" id="headingOne">
                     <button class="btn" data-toggle="collapse" data-target="#key{{ key.id }}" aria-expanded="true" aria-controls="key{{ key.id }}">
-                        <i class="bi bi-justify"></i> {{ key.user }}/{{ key.comment }}
+                        <i class="bi bi-justify"></i>{{ key.comment }}
                     </button>
+                    <a href="{% url 'edituser' user.id %}"><span class="badge bg-success" style="font-size: 100%">{{ key.user }}</span></a>
                     <div class="float-end">
                              {% if key.active %}
                                  <a href="{% url 'adminactivatekey' key.id %}"><button type="button" class="btn btn-warning"><i class="bi bi-check-square"></i></button></a>
@@ -68,7 +69,6 @@
                             Most nem aktív
                         {% endif %}
                         <br>
-                        <b>Rendszernév: {{ key.user.userdetail.systemuser }}</b>
                         <br>
                         <i>{{ key.pubkey }}</i>
                     </div>

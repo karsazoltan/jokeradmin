@@ -13,11 +13,21 @@
 {% block content %}
     <h1>SSH Kulcsok</h1>
     {% if user.userdetail.systemuser %}
-        <p><b>HPC társított fiókok: </b><i>
-            {% for sysuser in user.userdetail.systemuser.all %}
-                {{ sysuser }}{% if sysuser.issudo %}(root){% endif %},
-            {% endfor %}
-        </i></p>
+        <table>
+        <tr>
+            <th>HPC társított fiókok: </th>
+            <td><h5>
+                {% for sysuser in user.userdetail.systemuser.all %}
+                    {% if sysuser.issudo %}
+                        <span class="badge bg-danger">{{ sysuser }}</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">{{ sysuser }}</span>
+                    {% endif %}
+                {% endfor %}
+                </h5>
+            </td>
+        </tr>
+        </table>
         <div class="alert alert-danger">
             A fenti linux felhasználók nevei alatt tud bejelentkezni a hpc központi gépére, a lent megadott ssh kulcsok segítségével.
         </div>

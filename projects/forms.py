@@ -54,17 +54,6 @@ class AdminProjectForm(forms.Form):
         owner.userdetail.systemuser.add(system_user)
         owner.userdetail.save()
 
-        if self.cleaned_data.get('partners'):
-            partnersusername = self.cleaned_data['partners'].split(',')
-            for partnername in partnersusername:
-                if partnername != "":
-                    partner = get_user_model().objects.filter(username__icontains=partnername.strip())
-                    partner.userdetail.systemuser.add(system_user)
-                    partner.userdetail.save()
-
-        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=system_user).filter(active=True)
-        savekeys(keys, system_user)
-
         newproject = Project(
             owner=owner,
             system_user=system_user,
@@ -73,12 +62,19 @@ class AdminProjectForm(forms.Form):
             public=self.cleaned_data['public'])
         newproject.save()
 
-        partnersusername = self.cleaned_data['partners'].split(',')
-        for partnername in partnersusername:
-            if partnername != "":
-                partner = get_user_model().objects.filter(username=partnername.strip()).get()
-                newproject.users.add(partner)
+        if self.cleaned_data.get('partners'):
+            partnersusername = self.cleaned_data['partners'].split(',')
+            for partnername in partnersusername:
+                if partnername != "":
+                    partner = get_user_model().objects.filter(username=partnername.strip()).get()
+                    newproject.users.add(partner)
+                    partner.userdetail.systemuser.add(system_user)
+                    partner.userdetail.save()
+
         newproject.save()
+
+        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=system_user).filter(active=True)
+        savekeys(keys, system_user)
 
 class AddPartnerForm(forms.Form):
     user = forms.CharField(max_length=200)
@@ -98,3 +94,7 @@ class AddPartnerForm(forms.Form):
     def addpartner(self, project):
         user = get_user_model().objects.filter(username=self.cleaned_data['user']).get()
         project.users.add(user)
+        user.userdetail.systemuser.add(project.system_user)
+        user.userdetail.save()
+        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
+        savekeys(keys, project.system_user)

@@ -40,8 +40,9 @@
             <div class="card my-3">
                 <div class="card-header container-fluid" id="headingOne">
                     <button class="btn" data-toggle="collapse" data-target="#partnerproject{{ p.id }}" aria-expanded="true" aria-controls="partnerproject{{ p.id }}">
-                        <i class="bi bi-justify"></i> {{ p.owner.username }}/{{ p.title }}
+                        <i class="bi bi-justify"></i>{{ p.title }}
                     </button>
+                    <span class="badge bg-success" style="font-size: 100%">{{ p.owner.username }}</span>
                     <div class="float-end">
                         <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-info-square"></i></button></a>
                     </div>

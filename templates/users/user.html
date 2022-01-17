@@ -19,9 +19,15 @@
         {% if userdetail.systemuser %}
             <tr>
                 <th>A következő hpc felhasználókhoz társítva: </th>
-                <td>{% for sysuser in user.userdetail.systemuser.all %}
-                {{ sysuser }}{% if sysuser.issudo %}(root){% endif %},
-            {% endfor %}</td>
+                <td><h5>
+                    {% for sysuser in user.userdetail.systemuser.all %}
+                        {% if sysuser.issudo %}
+                            <span class="badge bg-danger">{{ sysuser }}</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ sysuser }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </h5></td>
             </tr>
         {% else %}
             <tr>
