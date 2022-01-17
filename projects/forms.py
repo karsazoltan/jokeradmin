@@ -13,7 +13,8 @@ from users.service import adduser
 class AdminProjectForm(forms.Form):
     title = forms.CharField(max_length=100)
     owner = forms.CharField(max_length=100)
-    system_user = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+', error_messages={ 'invalid': ("Csak betűket és számokat tartalmazhat, maximum 40 karakter")} )
+    system_user = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+', error_messages={
+        'invalid': ("Csak betűket és számokat tartalmazhat, maximum 40 karakter")})
     partners = forms.CharField(max_length=200, empty_value="", required=False)
     description = forms.CharField(widget=forms.Textarea, max_length=1000)
     public = forms.BooleanField(required=False, initial=False)
@@ -76,6 +77,7 @@ class AdminProjectForm(forms.Form):
         keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=system_user).filter(active=True)
         savekeys(keys, system_user)
 
+
 class AddPartnerForm(forms.Form):
     user = forms.CharField(max_length=200)
 
@@ -98,3 +100,11 @@ class AddPartnerForm(forms.Form):
         user.userdetail.save()
         keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
         savekeys(keys, project.system_user)
+
+
+class EditDescription(forms.Form):
+    description = forms.CharField(widget=forms.Textarea, max_length=1000)
+
+    def edit_description(self, project):
+        project.description = self.cleaned_data['description']
+        project.save()

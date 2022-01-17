@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Projektek{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Publikus projektek</h1>
+    <div id="accordion">
+        {% for p in projects %}
+            <div class="card my-3">
+                <div class="card-header container-fluid" id="headingOne">
+                    <button class="btn" data-toggle="collapse" data-target="#project{{ p.id }}" aria-expanded="true" aria-controls="project{{ p.id }}">
+                        <i class="bi bi-justify"></i>{{ p.title }}
+                    </button>
+                    <span class="badge bg-success" style="font-size: 100%">{{ p.owner.email }}</span>
+                    <div class="float-end">
+                        <button type="button" class="btn btn-primary">
+                            Partnerek <span class="badge bg-secondary">{{ p.users.count }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="project{{ p.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body" id="content{{ p.id }}">
+                        markdown content
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            nincs
+        {% endfor %}
+    </div>
+    <script>
+        {% for p in projects %}
+            document.getElementById('content{{ p.id }}').innerHTML = marked.parse('{{ p.description | escapejs }}');
+        {% endfor %}
+    </script>
+{% endblock %}

@@ -49,8 +49,9 @@
             <div class="card my-3">
                 <div class="card-header container-fluid" id="headingOne">
                     <button class="btn" data-toggle="collapse" data-target="#userproject{{ p.id }}" aria-expanded="true" aria-controls="userproject{{ p.id }}">
-                        <i class="bi bi-justify"></i> {{ p.owner.username }}/{{ p.title }}
+                        <i class="bi bi-justify"></i> {{ p.title }}
                     </button>
+                    <a href="{% url 'edituser' user.id %}"><span class="badge bg-success" style="font-size: 100%">{{ p.owner.username }}</span></a>
                     <div class="float-right">
                         <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></a>
                     </div>
@@ -107,13 +108,9 @@
         <div class="form-group row">
             <label for="id_description" class="col-md-1 col-form-label">Leírás:</label>
             <div class="col-md-4">
-                <textarea name="description" class="form-control" cols="40" rows="10" maxlength="1000" aria-describedby="help" required="" id="id_description" placeholder="Leírás"># H1
-## h2
-* felsorolás 1
-* felsorolás 2
-*dőlt* sima **vastag**
-
-bekezdés1 [link](https://google.com)</textarea>
+                <textarea name="description" class="form-control" cols="40" rows="10" maxlength="1000" aria-describedby="help" required="" id="id_description" placeholder="Leírás">## ADMIN
+                    A tulajdonos tudja majd szerkeszteni
+                </textarea>
                 <small id="help" class="form-text text-muted">Markdown formázás használható: </small>
             </div>
             <div class="col-md-7">

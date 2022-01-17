@@ -12,6 +12,7 @@
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <h1>"{{ project.title }}" projekt</h1>
 
     <div class="card bg- mb-3">
@@ -47,9 +48,30 @@
         </div>
     </div>
 
-    {% if user == project.owner %}
-        <h2>Projekt szerkesztése</h2>
-        <h3>Partner felhasználó kezelése</h3>
+    {% if user == project.owner or user.is_superuser %}
+        <div class="row">
+        <div class="col-sm-4">
+            <h2>Projekt szerkesztése</h2>
+        </div>
+        <div class="col-sm-8">
+            <div class="container-fluid">
+                <div class="float-end">
+                        {% if project.public %}
+                            <a href="{% url 'set_public' project.id %}"><button type="button" class="btn btn-warning">Publikus <i class="bi bi-check-square"></i></button></a>
+                        {% else %}
+                            <a href="{% url 'set_public' project.id %}"><button type="button" class="btn btn-success">Publikus <i class="bi bi-square"></i></button></a>
+                        {% endif %}
+                        <button type="button" class="btn btn-danger m-2" data-toggle="modal" data-target="#deleteModal">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#help">
+                        <i class="bi bi-question-square"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <h4>Partner felhasználó kezelése</h4>
         <form action="{% url 'details' project.id %}" method="post" id="form">
             {% csrf_token %}
             {% if form.non_field_errors %}
@@ -72,7 +94,7 @@
                 Kezdje el gépelni a felhasználó nevét, majd a szűrt listából válassza ki a megfelelőt.
             </small>
         </form>
-        <h3>Partner eltávolítása a projektből</h3>
+        <h4>Partner eltávolítása a projektből</h4>
         <div class="card-columns">
             {% for p in partners %}
                 <div class="card">
@@ -96,11 +118,35 @@
                 <p><i>Nincs partnere ennek a projektnek.</i></p>
             {% endfor %}
         </div>
-        <h3>Projekt törlése</h3>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-danger m-2" data-toggle="modal" data-target="#deleteModal">
-            Törlés
-        </button>
+        <h4>Leírás szerkesztése</h4>
+        <form method="post" action="{% url 'edit_project_desc' project.id %}" method="post" id="form">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <textarea name="description" class="form-control" cols="40" rows="10" maxlength="1000" aria-describedby="desc-help" required="" id="id_description" placeholder="Leírás"># H1
+## h2
+* felsorolás 1
+* felsorolás 2
+*dőlt* sima **vastag**
+
+bekezdés1 [link](https://google.com)</textarea>
+                    <small id="desc-help" class="form-text text-muted">Markdown formázás használható. </small>
+                    <div class="form-group row">
+                        <div class="col-md-11">
+                            <input type="submit" value="Módosítás" class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card bg-light mb-3">
+                        <div class="card-header"><h5>Leírás előnézet</h5></div>
+                        <div class="card-body">
+                            <div id="preview"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         <!-- Modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -118,6 +164,30 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Mégse</button>
                         <a href="{% url 'deleteproject' project.id %}"><button type="button" class="btn btn-danger">Törlés</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalTitle">Használat</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" style="text-align: justify">
+                            Az oldalon új partnereket lehet hozzáadni a projekthez, így ezen felhasználók is a projekthez társított rendszerfelhasználói név alatt be tudnak jelentkezni a központi gépre. Továbbá a leírás szerkeszthető és egyéb tulajdonságok is beállíthatóak.
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item border-top"><button type="button" class="btn btn-warning me-3">Publikus <i class="bi bi-check-square"></i></button>A projekt nem lesz publikus (most az)</li>
+                            <li class="list-group-item border-top"><button type="button" class="btn btn-success me-3">Publikus <i class="bi bi-square"></i></button>A projekt publikus lesz (most nem az)</li>
+                            <li class="list-group-item border-top"><button type="button" class="btn btn-danger me-3"><i class="bi bi-trash"></i></button>Projekt törlése</li>
+                            <li class="list-group-item border-top"><button type="button" class="btn btn-danger me-3"><i class="bi bi-box-arrow-right"></i></button>Partner eltávolítása</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -144,6 +214,12 @@
         </script>
     {% endif %}
     <script>
+            $(document).ready(function () {
+            $('#id_description').bind('input propertychange', function() {
+                $('#preview').html(marked.parse($('#id_description').val()))
+            });
+                $('#preview').html(marked.parse($('#id_description').val()))
+            })
             document.getElementById('description').innerHTML = marked.parse('{{ project.description | escapejs }}');
             {% if form.is_bound %}
                 $(window).on("load", goToId);
