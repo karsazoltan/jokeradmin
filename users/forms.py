@@ -58,9 +58,9 @@ class SetSysUserForm(forms.Form):
         super(SetSysUserForm, self).__init__(*args, **kwargs)
 
     def clean(self):
-        sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser'])
+        sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).filter(project__isnull=True)
         if sysuser.count() != 1:
-            raise ValidationError("Nincs ilyen rendszer felhasználó!")
+            raise ValidationError("Nincs ilyen rendszer felhasználó! Lehet egy projekthez társított felhasználóval próbálkozott!")
 
     def setSysUser(self):
         sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).get()

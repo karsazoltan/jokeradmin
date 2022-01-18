@@ -19,9 +19,19 @@
             <td><h5>
                 {% for sysuser in user.userdetail.systemuser.all %}
                     {% if sysuser.issudo %}
-                        <span class="badge bg-danger">{{ sysuser }}</span>
+                        <span class="badge bg-danger">
+                            {{ sysuser }}
+                            {% if sysuser.project %}
+                                 <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
+                            {% endif %}
+                        </span>
                     {% else %}
-                        <span class="badge bg-warning text-dark">{{ sysuser }}</span>
+                        <span class="badge bg-warning text-dark">
+                            {{ sysuser }}
+                            {% if sysuser.project %}
+                                <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
+                            {% endif %}
+                        </span>
                     {% endif %}
                 {% endfor %}
                 </h5>

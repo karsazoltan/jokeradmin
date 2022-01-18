@@ -39,7 +39,7 @@ def edituser(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
-    systemusers = SystemUser.objects.all()
+    systemusers = SystemUser.objects.all().filter(project__isnull=True)
     prevpage = '/users'
     if request.GET.get('prev'):
         prevpage = request.GET.get('prev')

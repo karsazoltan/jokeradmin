@@ -23,16 +23,24 @@
                     <tr><th>Tulajdonos</th><td><h5><span class="badge bg-success">{{ project.owner }}</span></h5></td></tr>
                     <tr><th>HPC felhasználó</th><td><h5>
                         {% if project.system_user.issudo %}
-                        <span class="badge bg-danger">{{ project.system_user }}</span>
+                        <span class="badge bg-danger">
+                            {{ project.system_user }}
+                            <a class="text-primary" href="{% url 'details' project.id %}"><i class="bi bi-kanban"></i></a>
+                        </span>
                     {% else %}
-                        <span class="badge bg-warning text-dark">{{ project.system_user }}</span>
+                        <span class="badge bg-warning text-dark">
+                            {{ project.system_user }}
+                            <a class="text-primary" href="{% url 'details' project.id %}"><i class="bi bi-kanban"></i></a>
+                        </span>
                     {% endif %}
                     </h5></td></tr>
                     <tr><th>Publikus</th><td>{{ project.public }}</td></tr>
                     <tr><th>Partnerek</th><td>
                     <h5>
                         {% for user in partners %}
-                            <span class="badge bg-primary">{{ user.username }}</span>
+                            <span class="badge bg-primary">
+                                {{ user.username }}
+                            </span>
                         {% endfor %}
                     </h5>
                     </td></tr>

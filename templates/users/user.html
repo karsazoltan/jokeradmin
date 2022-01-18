@@ -16,15 +16,28 @@
         <tr><th>Felhasználói név: </th><td>{{ user.username }}</td></tr>
         <tr><th>Web Admin jogok: </th><td>{{ user.is_superuser }}</td></tr>
         <tr><th>Neptun: </th><td>{{ userdetail.neptun }}</td></tr>
+        {% if user.email %}
+            <tr><th>Email: </th><td>{{ user.email }}</td></tr>
+        {% endif %}
         {% if userdetail.systemuser %}
             <tr>
                 <th>A következő hpc felhasználókhoz társítva: </th>
                 <td><h5>
                     {% for sysuser in user.userdetail.systemuser.all %}
                         {% if sysuser.issudo %}
-                            <span class="badge bg-danger">{{ sysuser }}</span>
+                        <span class="badge bg-danger">
+                            {{ sysuser }}
+                            {% if sysuser.project %}
+                                 <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
+                            {% endif %}
+                        </span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">{{ sysuser }}</span>
+                        <span class="badge bg-warning text-dark">
+                            {{ sysuser }}
+                            {% if sysuser.project %}
+                                <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
+                            {% endif %}
+                        </span>
                         {% endif %}
                     {% endfor %}
                 </h5></td>

@@ -53,6 +53,11 @@
                         {% if user.issudo %}
                             (root)
                         {% endif %}
+                    <div class="float-end">
+                        {% if user.project %}
+                            <a href="{% url 'details' user.project.id %}"><button type="button" class="btn btn-info btn-sm"><i class="bi bi-kanban"></i></button></a>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="card-body">
                     Csatolt felhasználói fiókok:
@@ -60,7 +65,11 @@
                         {% for webuser in user.webusers.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center border-top">
                                 {{  webuser.user.username }}
-                                <span><a href="{% url 'edituser' webuser.user.id %}?prev={{ request.path|urlencode }}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a></span>
+                                <span>
+                                    <a href="{% url 'edituser' webuser.user.id %}?prev={{ request.path|urlencode }}">
+                                        <button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button>
+                                    </a>
+                                </span>
                             </li>
                         {% empty %}
                             <i>még nincs társítva</i>

@@ -17,6 +17,9 @@
         <tr><th>Felhasználói név: </th><td><h5><span class="badge bg-success">{{ userinfo.username }}</span></h5></td></tr>
         <tr><th>Aktív: </th><td>{{ userinfo.is_active }}</td></tr>
         <tr><th>Web Admin jogok: </th><td>{{ userinfo.is_superuser }}</td></tr>
+        {% if user.email %}
+            <tr><th>Email: </th><td>{{ user.email }}</td></tr>
+        {% endif %}
         {% if userinfo.userdetail %}
             <tr><th>Neptun: </th><td>{{ userinfo.userdetail.neptun }}</td></tr>
             {% if userinfo.userdetail.systemuser %}
@@ -26,9 +29,19 @@
                         <h5>
                             {% for sysuser in userinfo.userdetail.systemuser.all %}
                                 {% if sysuser.issudo %}
-                                    <span class="badge bg-danger">{{ sysuser }}</span>
+                                    <span class="badge bg-danger">
+                                        {{ sysuser }}
+                                    {% if sysuser.project %}
+                                        <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
+                                    {% endif %}
+                                    </span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark">{{ sysuser }}</span>
+                                    <span class="badge bg-warning text-dark">
+                                        {{ sysuser }}
+                                    {% if sysuser.project %}
+                                        <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
+                                    {% endif %}
+                                    </span>
                                 {% endif %}
                             {% endfor %}
                         </h5>
@@ -58,7 +71,7 @@
             </ul>
         {% endif %}
         <div class="form-group row">
-            <label for="id_systemuser">Linux felhasználó:</label>
+            <label for="id_systemuser">Linux felhasználók (nincsenek projekthez társítva):</label>
             <div class="form-group col-md-4 mb-0">
                 <select class="input-group custom-select" id="id_systemuser" name="systemuser" autocomplete="off">
                         {% if not userinfo.userdetail.systemuser.all %}
@@ -93,13 +106,22 @@
                         </div>
                         <div class="col-3">
                             <div class="float-end">
-                                <a href="{% url 'delete_sys_from_webuser' userinfo.id sysuser.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button></a>
+                                {% if sysuser.project %}
+                                    <a href="{% url 'details' sysuser.project.id %}"><button type="button" class="btn btn-info"><i class="bi bi-kanban"></i></button></a>
+                                    <button type="button" class="btn btn-danger disabled"><i class="bi bi-box-arrow-right"></i></button>
+                                {% else %}
+                                    <a href="{% url 'delete_sys_from_webuser' userinfo.id sysuser.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button></a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     Root felhasználó: {{ sysuser.issudo }}
+                    {% if sysuser.project %}
+                        <br> Projekt címe: {{ sysuser.project.title }} <br>
+                        <i>Amíg a projekt tulajdonosa vagy tagja, nem távolítható el.</i>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
@@ -111,7 +133,7 @@
             <a href="{% url 'activateuser' userinfo.id %}"><button type="button" class="btn btn-success">Aktiválás</button></a>
         {% else %}
             <div class="alert alert-danger" style="text-align: justify">
-                Ameddig nincs legalább egy linux felhasználóhoz társítva, nem aktiválható!
+                Ameddig nincs legalább egy linux felhasználóhoz társítva, nem aktiválható! Adja hozzá egy szabad projekthez partnerként, úgy is kaphat hpc rendszer felhasználói fiókot.
             </div>
         {% endif %}
     {% endif %}
