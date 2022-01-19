@@ -36,12 +36,12 @@ class AdminSSHKeyForm(forms.Form):
     pubkey = forms.CharField(widget=forms.Textarea, max_length=1000)
 
     def clean(self):
-        user = get_user_model().objects.filter(username__icontains=self.cleaned_data['username'])
+        user = get_user_model().objects.filter(username=self.cleaned_data['username'])
         if user.count() != 1:
-            raise ValidationError("Nincs ilyen felhasználó, vagy több felhasználó is illeszkedik: " + self.cleaned_data['username'])
+            raise ValidationError("Nincs ilyen felhasználó: " + self.cleaned_data['username'])
         return self.cleaned_data
 
     def newKey(self):
-        user = get_user_model().objects.filter(username__icontains=self.cleaned_data['username']).get()
+        user = get_user_model().objects.filter(username=self.cleaned_data['username']).get()
         newkey = SSHKey(user=user, active=False, comment=self.cleaned_data['comment'], pubkey=self.cleaned_data['pubkey'])
         newkey.save()

@@ -21,8 +21,15 @@ class AdminProjectForm(forms.Form):
 
     def clean(self):
         super().clean()
+        if self.cleaned_data.get('system_user'):
+            user = SystemUser.objects.filter(username=self.cleaned_data['system_user'])
+            if user.count() == 1:
+                raise ValidationError("Nem társítható már meglévő HPC felhaszálóhoz!")
+        else:
+            raise ValidationError('A HPC felhasználó nem lehet üres!')
+
         if self.cleaned_data.get('owner'):
-            owner = get_user_model().objects.filter(username__icontains=self.cleaned_data['owner'])
+            owner = get_user_model().objects.filter(username=self.cleaned_data['owner'])
             if owner.count() == 0:
                 raise ValidationError("Nincs ilyen felhasználó tulajdonosnak: " + self.cleaned_data['owner'])
             elif owner.count() > 1:
@@ -32,7 +39,7 @@ class AdminProjectForm(forms.Form):
             partnersusername = self.cleaned_data['partners'].split(',')
             for partnername in partnersusername:
                 if partnername != "":
-                    partner = get_user_model().objects.filter(username__icontains=partnername.strip())
+                    partner = get_user_model().objects.filter(username=partnername.strip())
                     if partner.count() != 1:
                         raise ValidationError("Nincs ilyen felhasználó partnernek: " + partnername)
                     elif partner.count() > 1:
@@ -43,11 +50,9 @@ class AdminProjectForm(forms.Form):
         return self.cleaned_data
 
     def newProject(self):
-        user = SystemUser.objects.filter(username=self.cleaned_data['system_user'])
-        if user.count() == 0:
-            newSystemUser = SystemUser(username=self.cleaned_data['system_user'])
-            newSystemUser.save()
-            adduser(self.cleaned_data['system_user'])
+        newSystemUser = SystemUser(username=self.cleaned_data['system_user'])
+        newSystemUser.save()
+        adduser(self.cleaned_data['system_user'])
 
         system_user = SystemUser.objects.filter(username=self.cleaned_data['system_user']).get()
 

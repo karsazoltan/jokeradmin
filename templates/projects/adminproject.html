@@ -206,17 +206,17 @@
                 }
             });
         });
-        {% if form.is_bound %}
-            $(window).on("load", goToId);
-        {% endif %}
 
         let pagination = new Pagination({{ page }}, {{ maxpage }}, "{{ filter }}", "{% url 'adminprojects' %}");
         function search() {
             pagination.filter = $('#search').val();
             pagination.start();
         }
-        {% if pagination %}
+        {% if pagination and not form.is_bound %}
             $(window).on("load", goToId("#pagi"));
+        {% endif %}
+        {% if form.is_bound %}
+            $(window).on("load", goToId("#form"));
         {% endif %}
     </script>
 {% endblock %}
