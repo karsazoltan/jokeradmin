@@ -20,29 +20,30 @@
         <div class="card-body">
             <div>
                 <table>
-                    <tr><th>Tulajdonos</th><td><h5><span class="badge bg-success">{{ project.owner }}</span></h5></td></tr>
-                    <tr><th>HPC felhasználó</th><td><h5>
+                    <tr><th>Tulajdonos</th><td>
+                        <a class="badge bg-success" style="font-size: 100%" href="{% url 'edituser' project.owner.id %}">
+                        {{ project.owner }}</a>
+                    </td></tr>
+                    <tr><th>HPC felhasználó</th><td>
                         {% if project.system_user.issudo %}
-                        <span class="badge bg-danger">
+                        <span class="badge bg-danger" style="font-size: 100%">
                             {{ project.system_user }}
                             <a class="text-primary" href="{% url 'details' project.id %}"><i class="bi bi-kanban"></i></a>
                         </span>
                     {% else %}
-                        <span class="badge bg-warning text-dark">
+                        <span class="badge bg-warning text-dark" style="font-size: 100%">
                             {{ project.system_user }}
                             <a class="text-primary" href="{% url 'details' project.id %}"><i class="bi bi-kanban"></i></a>
                         </span>
                     {% endif %}
-                    </h5></td></tr>
+                    </td></tr>
                     <tr><th>Publikus</th><td>{{ project.public }}</td></tr>
                     <tr><th>Partnerek</th><td>
-                    <h5>
-                        {% for user in partners %}
-                            <span class="badge bg-primary">
-                                {{ user.username }}
-                            </span>
+                        {% for partner in partners %}
+                            <a href="{% url 'edituser' partner.id %}" class="badge bg-primary" style="font-size: 100%">
+                                {{ partner.username }}
+                            </a>
                         {% endfor %}
-                    </h5>
                     </td></tr>
                 </table>
             </div>

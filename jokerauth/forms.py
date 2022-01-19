@@ -15,6 +15,8 @@ class SSHKeyForm(forms.Form):
         super(SSHKeyForm, self).__init__(*args, **kwargs)
 
     def clean(self):
+        if not self.cleaned_data.get('comment') or not self.cleaned_data.get('pubkey'):
+            raise ValidationError("Töltse ki az összes mezőt!")
         userKeyNum = SSHKey.objects.filter(user=self.request.user).count()
         if MAXKEYNUM < userKeyNum + 1:
             raise ValidationError("Maximális kulcsszám elérve!")
@@ -36,6 +38,8 @@ class AdminSSHKeyForm(forms.Form):
     pubkey = forms.CharField(widget=forms.Textarea, max_length=1000)
 
     def clean(self):
+        if not self.cleaned_data.get('username') or not self.cleaned_data.get('comment') or not self.cleaned_data.get('pubkey'):
+            raise ValidationError("Töltse ki az összes mezőt!")
         user = get_user_model().objects.filter(username=self.cleaned_data['username'])
         if user.count() != 1:
             raise ValidationError("Nincs ilyen felhasználó: " + self.cleaned_data['username'])

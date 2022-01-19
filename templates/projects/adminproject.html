@@ -51,7 +51,7 @@
                     <button class="btn" data-toggle="collapse" data-target="#userproject{{ p.id }}" aria-expanded="true" aria-controls="userproject{{ p.id }}">
                         <i class="bi bi-justify"></i> {{ p.title }}
                     </button>
-                    <a href="{% url 'edituser' p.owner.id %}"><span class="badge bg-success" style="font-size: 100%">{{ p.owner.username }}</span></a>
+                    <a class="badge bg-success" style="font-size: 100%" href="{% url 'edituser' p.owner.id %}">{{ p.owner.username }}</a>
                     <div class="float-right">
                         <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></a>
                     </div>

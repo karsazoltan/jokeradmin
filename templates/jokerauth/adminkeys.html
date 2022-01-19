@@ -50,7 +50,7 @@
                     <button class="btn" data-toggle="collapse" data-target="#key{{ key.id }}" aria-expanded="true" aria-controls="key{{ key.id }}">
                         <i class="bi bi-justify"></i>{{ key.comment }}
                     </button>
-                    <a href="{% url 'edituser' key.user.id %}"><span class="badge bg-success" style="font-size: 100%">{{ key.user }}</span></a>
+                    <a class="badge bg-success" style="font-size: 100%" href="{% url 'edituser' key.user.id %}">{{ key.user }}</a>
                     <div class="float-end">
                              {% if key.active %}
                                  <a href="{% url 'adminactivatekey' key.id %}"><button type="button" class="btn btn-warning"><i class="bi bi-check-square"></i></button></a>
@@ -75,7 +75,7 @@
                 </div>
             </div>
         {% empty %}
-            empty
+            nincs
         {% endfor %}
         </div>
     <h2>Új kulcs megadása</h2>
