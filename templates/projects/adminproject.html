@@ -51,7 +51,7 @@
                     <button class="btn" data-toggle="collapse" data-target="#userproject{{ p.id }}" aria-expanded="true" aria-controls="userproject{{ p.id }}">
                         <i class="bi bi-justify"></i> {{ p.title }}
                     </button>
-                    <a href="{% url 'edituser' user.id %}"><span class="badge bg-success" style="font-size: 100%">{{ p.owner.username }}</span></a>
+                    <a href="{% url 'edituser' p.owner.id %}"><span class="badge bg-success" style="font-size: 100%">{{ p.owner.username }}</span></a>
                     <div class="float-right">
                         <a href="{% url 'details' p.id %}"><button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button></a>
                     </div>
@@ -69,12 +69,10 @@
     <h2>Projekt létrehozása</h2>
     <form action="{% url 'adminprojects' %}" method="post" id="form">
         {% csrf_token %}
-        {% if form.errors %}
+        {% if form.non_field_errors %}
             <ul class='list-group py-3'>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li class="list-group-item list-group-item-danger">{{ error }}</li>
-                    {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
