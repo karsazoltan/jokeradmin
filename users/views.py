@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.paginator import Paginator
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -18,7 +19,7 @@ def userpage(request):
         userdetail = UserDetail.objects.filter(user=request.user).get()
     except ObjectDoesNotExist:
         raise Http404('Adatok nem találhatóak')
-    return render(request, 'users/user.html', { 'userdetail': userdetail })
+    return render(request, 'users/user.html', {'userdetail': userdetail})
 
 
 def registration(request):
@@ -50,8 +51,9 @@ def edituser(request, id):
             return HttpResponseRedirect(f'/edituser/{id}?prev={prevpage}')
     else:
         form = SetSysUserForm()
-    return render(request, 'users/edituser.html', { 'userinfo': user, 'systemusers':systemusers, 'form': form,
-                                                    'prevpage': prevpage })
+    return render(request, 'users/edituser.html', {'userinfo': user, 'systemusers': systemusers, 'form': form,
+                                                   'prevpage': prevpage})
+
 
 @login_required
 def activateuser(request, id):
@@ -61,6 +63,7 @@ def activateuser(request, id):
     user.is_active = True
     user.save()
     return HttpResponseRedirect(f'/edituser/{id}')
+
 
 @login_required
 def delete_sysuser_from_user(request, webuser_id, sysuser_id):
@@ -76,12 +79,27 @@ def delete_sysuser_from_user(request, webuser_id, sysuser_id):
     savekeys(keys, sysuser)
     return HttpResponseRedirect('/edituser/' + str(webuser_id))
 
+
 @login_required
 def users(request):
     if not request.user.is_superuser:
         raise PermissionDenied
-    users = get_user_model().objects.filter(is_active=True)
-    return render(request, 'users/users.html', { 'users': users })
+    pagination = False
+    userfilter = ''
+    if request.GET.get('search'):
+        pagination = True
+        userfilter = request.GET.get('search')
+    all_users = get_user_model().objects.filter(is_active=True).filter(username__contains=userfilter).order_by(
+        '-username')
+    paginator = Paginator(all_users, 6)
+    page_number = 1
+    if request.GET.get('page'):
+        pagination = True
+        page_number = request.GET.get('page')
+    users = paginator.get_page(page_number)
+    return render(request, 'users/users.html',
+                  {'users': users, 'page': page_number, 'maxpage': paginator.num_pages, 'filter': userfilter,
+                   'pagination': pagination})
 
 
 @login_required
@@ -99,7 +117,7 @@ def systemuser(request):
     else:
         form = SystemUserForm()
     systemusers = SystemUser.objects.all()
-    return render(request, 'users/systemuser.html', { 'form': form, 'cmd': cmd, 'systemusers': systemusers})
+    return render(request, 'users/systemuser.html', {'form': form, 'cmd': cmd, 'systemusers': systemusers})
 
 
 @login_required
@@ -107,4 +125,4 @@ def inactiveusers(request):
     if not request.user.is_superuser:
         raise PermissionDenied
     users = User.objects.filter(is_active=False)
-    return render(request, 'users/inactiveusers.html', { 'users': users } )
+    return render(request, 'users/inactiveusers.html', {'users': users})

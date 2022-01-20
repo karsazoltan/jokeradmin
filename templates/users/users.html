@@ -12,9 +12,39 @@
 
 {% block content %}
     <h1>Aktív webes felhasználók</h1>
-    <small class="form-text text-muted">
-        Felhasználót hozzáadni fiók kérésként lehet.
-    </small>
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Felhasználók böngészése</h2>
+            <small class="form-text text-muted">
+                Felhasználót hozzáadni a regisztrációs lapon lehet.
+            </small>
+        </div>
+        <div class="col-sm-3">
+            <div class="container-fluid">
+                <div class="float-sm-start">
+                    <div class="input-group my-1">
+                        <button id="btn-start" type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
+                        <button id="btn-prev" type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
+                        <button id="btn-next" type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
+                        <button id="btn-end" type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="container-fluid">
+                <div class="float-sm-end">
+                    <div class="input-group my-1">
+                        <div class="form-outline">
+                            <input type="search" id="search" placeholder="Felhasználói név" class="form-control" value="{{ filter }}"  />
+                        </div>
+                        <button type="button"  class="btn btn-primary" onclick="search()"><i class="bi bi-search"></i></button>
+                        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#help"><i class="bi bi-question-square"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card-columns">
         {% for user in users %}
             <div class="card">
@@ -55,4 +85,11 @@
             <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
         </ol>
     </nav>
+    <script>
+        let pagination = new Pagination({{ page }}, {{ maxpage }}, "{{ filter }}", "{% url 'users' %}");
+        function search() {
+            pagination.filter = $('#search').val();
+            pagination.start();
+        }
+    </script>
 {% endblock %}
