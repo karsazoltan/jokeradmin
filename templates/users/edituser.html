@@ -98,20 +98,16 @@
         {% for sysuser in userinfo.userdetail.systemuser.all %}
             <div class="card">
                 <div class="card-header container-fluid">
-                    <div class="row">
-                        <div class="col-9">
-                            <h5>{{ sysuser }}</h5>
-                        </div>
-                        <div class="col-3">
-                            <div class="float-end">
-                                {% if sysuser.project %}
-                                    <a href="{% url 'details' sysuser.project.id %}"><button type="button" class="btn btn-info"><i class="bi bi-kanban"></i></button></a>
-                                    <button type="button" class="btn btn-danger disabled"><i class="bi bi-box-arrow-right"></i></button>
-                                {% else %}
-                                    <a href="{% url 'delete_sys_from_webuser' userinfo.id sysuser.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button></a>
-                                {% endif %}
-                            </div>
-                        </div>
+                    <button class="btn">
+                        <i class="bi bi-justify"></i>{{ sysuser }}
+                    </button>
+                    <div class="float-end">
+                        {% if sysuser.project %}
+                            <a href="{% url 'details' sysuser.project.id %}"><button type="button" class="btn btn-info"><i class="bi bi-kanban"></i></button></a>
+                            <a><button type="button" class="btn btn-danger disabled"><i class="bi bi-box-arrow-right"></i></button></a>
+                        {% else %}
+                            <a href="{% url 'delete_sys_from_webuser' userinfo.id sysuser.id %}"><button type="button" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i></button></a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body">

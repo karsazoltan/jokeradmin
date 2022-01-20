@@ -22,17 +22,17 @@
         {% if userdetail.systemuser %}
             <tr>
                 <th>A következő hpc felhasználókhoz társítva: </th>
-                <td><h5>
+                <td>
                     {% for sysuser in user.userdetail.systemuser.all %}
                         {% if sysuser.issudo %}
-                        <span class="badge bg-danger">
+                        <span class="badge bg-danger" style="font-size: 100%">
                             {{ sysuser }}
                             {% if sysuser.project %}
                                  <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
                             {% endif %}
                         </span>
                         {% else %}
-                        <span class="badge bg-warning text-dark">
+                        <span class="badge bg-warning text-dark" style="font-size: 100%">
                             {{ sysuser }}
                             {% if sysuser.project %}
                                 <a class="text-primary" href="{% url 'details' sysuser.project.id %}"><i class="bi bi-kanban"></i></a>
@@ -40,7 +40,7 @@
                         </span>
                         {% endif %}
                     {% endfor %}
-                </h5></td>
+                </td>
             </tr>
         {% else %}
             <tr>

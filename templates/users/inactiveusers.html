@@ -16,7 +16,9 @@
         {% for user in users %}
             <div class="card">
                 <div class="card-header container-fluid">
-                    <b>{{ user.username }}</b>
+                    <button class="btn">
+                        <i class="bi bi-justify"></i>{{ user.username }}
+                    </button>
                     <div class="float-end">
                         <a href="{% url 'edituser' user.id %}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a>
                     </div>

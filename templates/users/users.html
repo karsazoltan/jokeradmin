@@ -19,9 +19,11 @@
         {% for user in users %}
             <div class="card">
                 <div class="card-header container-fluid">
-                    <b>{{ user.username }}</b>
+                    <button class="btn">
+                        <i class="bi bi-justify"></i>{{ user.username }}
+                    </button>
                     <div class="float-end">
-                        <a href="{% url 'edituser' user.id %}?prev={{ request.path|urlencode }}"><button type="button" class="btn btn-primary btn-sm"><i class="bi bi-info-square"></i></button></a>
+                        <a href="{% url 'edituser' user.id %}?prev={{ request.path|urlencode }}"><button type="button" class="btn btn-primary"><i class="bi bi-info-square"></i></button></a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -30,6 +32,11 @@
                         {% for sysuser in user.userdetail.systemuser.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center border-top">
                                 {{  sysuser.username }}
+                                {% if sysuser.project %}
+                                    <span>
+                                        <a href="{% url 'details' sysuser.project.id %}"><button type="button" class="btn btn-info btn-sm"><i class="bi bi-kanban"></i></button></a>
+                                    </span>
+                                {% endif %}
                             </li>
                         {% empty %}
                             <i>még nincs társítva</i>
