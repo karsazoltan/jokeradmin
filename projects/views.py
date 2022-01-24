@@ -20,9 +20,21 @@ def projects(request):
 
 
 def public_projects(request):
-    projects = Project.objects.filter(public=True)
+    pagination = False
+    userfilter = ''
+    if request.GET.get('search'):
+        pagination = True
+        userfilter = request.GET.get('search')
+    allprojects = Project.objects.filter(title__contains=userfilter).filter(public=True).order_by('-create_date')
+    paginator = Paginator(allprojects, 5)
+    page_number = 1
+    if request.GET.get('page'):
+        pagination = True
+        page_number = request.GET.get('page')
+    projects = paginator.get_page(page_number)
     return render(request, 'projects/public.html',
-                  {'projects': projects})
+                  { 'projects': projects,
+                    'page': page_number, 'maxpage': paginator.num_pages, 'filter': userfilter, 'pagination': pagination })
 
 @login_required
 def adminprojects(request):
