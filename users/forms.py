@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -15,25 +14,31 @@ class RegistrationForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
     email = forms.CharField(widget=forms.EmailInput())
     neptun = forms.CharField(max_length=6)
+    description = forms.CharField(max_length=500)
 
     def clean(self):
         user = get_user_model().objects.filter(username=self.cleaned_data['username'])
         if user.count() == 1:
             raise ValidationError("Már van ilyen felhasználó: " + self.cleaned_data['username'])
-        userdetail = UserDetail.objects.filter(neptun=self.cleaned_data['username'])
+        userdetail = UserDetail.objects.filter(neptun=self.cleaned_data['neptun'].upper())
         if userdetail.count() == 1:
-            raise ValidationError("Már van ilyen NEPTUN kód: " + self.cleaned_data['neptun'])
-
+            raise ValidationError("Már van ilyen NEPTUN kód: " + self.cleaned_data['neptun'].upper())
 
     def createUser(self):
-        user = User.objects.create_user(self.cleaned_data['username'], self.cleaned_data['email'], self.cleaned_data['password'])
+        user = User.objects.create_user(self.cleaned_data['username'],
+                                        self.cleaned_data['email'], self.cleaned_data['password'])
         user.is_active = False
         user.save()
-        userdetail = UserDetail(user=user, neptun=self.cleaned_data['neptun'])
-        userdetail.save()
+        user_detail = UserDetail(user=user,
+                                 neptun=self.cleaned_data['neptun'].upper(),
+                                 description=self.cleaned_data['description'])
+        user_detail.save()
+
 
 class SystemUserForm(forms.Form):
-    username = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+', error_messages={ 'invalid': ("Csak betűket és számokat tartalmazhat, maximum 40 karakter")} )
+    username = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+',
+                                error_messages={'invalid':
+                                                    "Csak betűket és számokat tartalmazhat, maximum 40 karakter"})
 
     def clean(self):
         super().clean()
@@ -61,7 +66,8 @@ class SetSysUserForm(forms.Form):
         if self.cleaned_data.get('systemuser'):
             sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).filter(project__isnull=True)
             if sysuser.count() != 1:
-                raise ValidationError("Nincs ilyen rendszer felhasználó! Lehet egy projekthez társított felhasználóval próbálkozott!")
+                raise ValidationError(
+                    "Nincs ilyen rendszer felhasználó! Lehet egy projekthez társított felhasználóval próbálkozott!")
         else:
             raise ValidationError("Üres rendszernév")
 
