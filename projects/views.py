@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
 from jokerauth.models import SSHKey
-from jokerauth.service import savekeys
+from jokerauth.service import save_keys
 from projects.forms import AddPartnerForm, AdminProjectForm, EditDescription
 from projects.models import Project
 
@@ -93,8 +93,8 @@ def deletepartner(request, project_id, partner_id):
         project.users.remove(partner)
         partner.userdetail.systemuser.remove(project.system_user)
         partner.userdetail.save()
-        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
-        savekeys(keys, project.system_user)
+        # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
+        save_keys.delay(project.system_user.username, True)
     else:
         raise PermissionDenied
     return HttpResponseRedirect('/projects/' + str(project_id))
@@ -145,8 +145,8 @@ def deleteproject(request, id):
         for partner in project.users.all():
             partner.userdetail.systemuser.remove(project.system_user)
             partner.userdetail.save()
-        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
-        savekeys(keys, project.system_user)
+        # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
+        save_keys.delay(project.system_user.username, True)
         project.delete()
     else:
         raise PermissionDenied

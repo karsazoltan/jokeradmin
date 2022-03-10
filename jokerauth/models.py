@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from jokerauth.service import *
+from jokerauth.service import save_keys
 
 
 class SSHKey(models.Model):
@@ -18,11 +18,11 @@ class SSHKey(models.Model):
             self.active = False
         self.save()
         for sysuser in self.user.userdetail.systemuser.all():
-            keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
-            savekeys(keys, sysuser)
+            # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+            save_keys.delay(sysuser.username, True)
 
     def deleteit(self):
         self.delete()
         for sysuser in self.user.userdetail.systemuser.all():
-            keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
-            savekeys(keys, sysuser)
+            # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+            save_keys.delay(sysuser.username, True)

@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from jokerauth.models import SSHKey
-from jokerauth.service import savekeys
+from jokerauth.service import save_keys
 from projects.models import Project
 from django.contrib.auth import get_user_model
 
@@ -79,8 +79,8 @@ class AdminProjectForm(forms.Form):
 
         newproject.save()
 
-        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=system_user).filter(active=True)
-        savekeys(keys, system_user)
+        # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=system_user).filter(active=True)
+        save_keys.delay(system_user.username, True)
 
 
 class AddPartnerForm(forms.Form):
@@ -103,8 +103,8 @@ class AddPartnerForm(forms.Form):
         project.users.add(user)
         user.userdetail.systemuser.add(project.system_user)
         user.userdetail.save()
-        keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
-        savekeys(keys, project.system_user)
+        # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=project.system_user).filter(active=True)
+        save_keys.delay(project.system_user.username, True)
 
 
 class EditDescription(forms.Form):

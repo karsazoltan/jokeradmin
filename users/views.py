@@ -8,7 +8,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from jokerauth.models import SSHKey
-from jokerauth.service import savekeys
+from jokerauth.service import save_keys
 from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm
 from users.models import UserDetail, SystemUser
 
@@ -75,8 +75,8 @@ def delete_sysuser_from_user(request, webuser_id, sysuser_id):
     except ObjectDoesNotExist:
         raise Http404('Objektum nem található')
     webuser.userdetail.systemuser.remove(sysuser)
-    keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
-    savekeys(keys, sysuser)
+    # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
+    save_keys.delay(sysuser.username, True)
     return HttpResponseRedirect('/edituser/' + str(webuser_id))
 
 
