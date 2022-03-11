@@ -52,7 +52,7 @@ class AdminProjectForm(forms.Form):
     def newProject(self):
         newSystemUser = SystemUser(username=self.cleaned_data['system_user'])
         newSystemUser.save()
-        adduser(self.cleaned_data['system_user'])
+        adduser.delay(self.cleaned_data['system_user'])
 
         system_user = SystemUser.objects.filter(username=self.cleaned_data['system_user']).get()
 

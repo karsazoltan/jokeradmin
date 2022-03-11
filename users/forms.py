@@ -51,7 +51,7 @@ class SystemUserForm(forms.Form):
     def newSystemUser(self):
         newSystemUser = SystemUser(username=self.cleaned_data['username'])
         newSystemUser.save()
-        adduser(self.cleaned_data['username'])
+        adduser.delay(self.cleaned_data['username'])
         return newSystemUser.bashcmd()
 
 

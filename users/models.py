@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.service import issudo
+from users.service import is_sudo
 
 
 class UserDetail(models.Model):
@@ -26,7 +26,7 @@ class SystemUser(models.Model):
         return f"sudo adduser -m -d /home1/{self.username.__str__()} {self.username.__str__()}"
 
     def issudo(self):
-        return issudo(self.username)
+        return is_sudo(self.username)
 
 
 
