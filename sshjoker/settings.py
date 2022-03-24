@@ -32,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ift8+vpc+7&eon7hriyp(2ta66r(jzre&(ked8%46y*_6e(ew!'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # redirect uname user to login page
 LOGIN_REDIRECT_URL = 'home'
@@ -118,6 +118,10 @@ DATABASES = {
 #         'PORT': '',
 #     }
 # }
+# CELERY_BROKER_URL = os.environ['BROKER_URL']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ENABLE_UTC = True
 
 
 # Password validation
