@@ -1,7 +1,16 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+
+from users import restapi
 from . import views
 
+router = routers.DefaultRouter()
+router.register(r'rest/webuser', restapi.UserViewSet)
+router.register(r'rest/userdetail', restapi.UserDetailViewSet)
+router.register(r'rest/sysuser', restapi.SystemUserViewSet)
+
 urlpatterns = [
+    path('user/', include(router.urls)),
     path('user', views.userpage, name='user'),
     path('registration', views.registration, name='registration'),
     path('systemuser', views.systemuser, name='systemuser'),

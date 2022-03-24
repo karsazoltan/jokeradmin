@@ -30,4 +30,5 @@ urlpatterns = [
     path('', include('projects.urls')),
     path('', include('users.urls')),
     path('403/', error_handler),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

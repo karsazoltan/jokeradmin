@@ -46,6 +46,11 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,7 +62,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'jokerauth',
     'projects',
-    'users'
+    'users',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
