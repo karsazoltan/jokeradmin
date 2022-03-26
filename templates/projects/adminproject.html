@@ -21,18 +21,19 @@
         <div class="col-sm-3">
             <div class="container-fluid">
                 <div class="float-sm-start">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="container-fluid">
+                <div class="float-sm-end form-inline">
                     <div class="input-group my-1">
                         <button id="btn-start" type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
                         <button id="btn-prev" type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
                         <button id="btn-next" type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
                         <button id="btn-end" type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-5">
-            <div class="container-fluid">
-                <div class="float-sm-end">
                     <div class="input-group my-1">
                         <div class="form-outline">
                             <input type="search" id="search" placeholder="Tulajdonos" class="form-control" value="{{ filter }}"  />

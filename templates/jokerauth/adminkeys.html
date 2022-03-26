@@ -19,18 +19,19 @@
         <div class="col-sm-3">
             <div class="container-fluid">
                 <div class="float-sm-start">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="container-fluid">
+                <div class="float-sm-end form-inline">
                     <div class="input-group my-1">
                         <button id="btn-start" type="button"  class="btn btn-info" onclick="pagination.start()"><i class="bi bi-arrow-bar-left"></i></button>
                         <button id="btn-prev" type="button"  class="btn btn-info" onclick="pagination.prev()"><i class="bi bi-caret-left"></i></button>
                         <button id="btn-next" type="button"  class="btn btn-info" onclick="pagination.next()"><i class="bi bi-caret-right"></i></button>
                         <button id="btn-end" type="button"  class="btn btn-info" onclick="pagination.end()"><i class="bi bi-arrow-bar-right"></i></button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-5">
-            <div class="container-fluid">
-                <div class="float-sm-end">
                     <div class="input-group my-1">
                         <div class="form-outline">
                             <input type="search" id="search" placeholder="Felhasználói név" class="form-control" value="{{ filter }}"  />
@@ -77,7 +78,7 @@
         {% empty %}
             nincs
         {% endfor %}
-        </div>
+    </div>
     <h2>Új kulcs megadása</h2>
     <form action="{% url 'adminkeys' %}" method="post" id="form">
         {% csrf_token %}
@@ -112,7 +113,49 @@
             </div>
         </div>
     </form>
+
+    <script id="key-template" type="text/x-jquery-tmpl">
+        <div class="card my-3">
+            <div class="card-header container-fluid" id="headingOne">
+                    <button class="btn" data-toggle="collapse" data-target="#key${id}" aria-expanded="true" aria-controls="key${key.id}">
+                        <i class="bi bi-justify"></i>${comment}
+                    </button>
+                    <a class="badge bg-success" style="font-size: 100%" href="{% url 'edituser' 0 %}">${user}</a>
+                    <div class="float-end">
+                            <a href="${active_url}"><button type="button" class="btn btn-warning"><i class="bi bi-check-square"></i></button></a>
+                            <a href="${delete_url}"><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></a>
+                    </div>
+                </div>
+                <div id="key${ id }" class="collapse" aria-labelledby="headingOne" data-parent="#allkeys">
+                    <div class="card-body">
+                        <b>${create_date}</b><br>
+                        <br>
+                    <i>${pubkey }</i>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    {% csrf_token %}
     <script>
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            $(document).ready(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'sshkey-list' %}",
+                    success: function(res){
+                        console.log(res)
+                        for(var i = 0; i < res.results.length; i++) {
+                            let key = res.results[i];
+                            $("allkeys").append("")
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
+            });
+
             $( function() {
                 var availableUsers = [
                     {% for user in users %}

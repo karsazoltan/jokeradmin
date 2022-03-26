@@ -6,10 +6,10 @@ from . import views
 from .restapi import SSHKeyViewSet
 
 router = routers.DefaultRouter()
-router.register(r'rest', SSHKeyViewSet)
+router.register(r'rest/sshkeys', SSHKeyViewSet)
 
 urlpatterns = [
-    path('sshkey/', include(router.urls)),
+    path('', include(router.urls)),
     path('sshkeys', views.sshkey, name='sshkeys'),
     path('sshkeys/activate/<int:id>/', views.activatekey, name='activatekey'),
     path('sshkeys/delete/<int:id>/', views.deletekey, name='deletekey'),
