@@ -45,12 +45,20 @@
                             {% endfor %}
                     </td>
                 </tr>
+                <tr><th>Jelenkező szöveg: </th><td>
+                    {% if userinfo.userdetail.description %}
+                        {{ userinfo.userdetail.description }}
+                    {% else %}
+                        nincs megadva
+                    {% endif %}
+                </td></tr>
             {% else %}
                 <tr>
                     <th>Systemuser: </th>
                     <td>Nincs rendszerfelhasználóhoz adva</td>
                 </tr>
             {% endif %}
+
         {% else %}
             <tr><th>Neptun: </th><td>További adatok nincsenek</td></tr>
         {% endif %}
@@ -84,9 +92,7 @@
         <div class="form-group row">
             <div class="form-group col-md-2">
                 <input type="submit" value="Társítás" class="btn btn-primary">
-            </div>
-            <div class="form-group col-md-2">
-                <a href="{% url 'systemuser' %}"><button type="button" class="btn btn-info">Új hpc felhasználó</button></a>
+                <a href="{% url 'systemuser' %}"><button type="button" class="btn btn-info">Új Linux felhasználó</button></a>
             </div>
         </div>
     </form>

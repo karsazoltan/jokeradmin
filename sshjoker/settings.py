@@ -43,7 +43,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'jokerdev.cloud.bme.hu',
-    '127.0.0.1'
+    '127.0.0.1',
+    'localhost'
 ]
 
 REST_FRAMEWORK = {
