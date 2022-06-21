@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Projektek{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Csoportos email-ek küldése</h1>
+    <p>Az elküldött üzenetet az összes felhasználó megkapja email formájában. </p>
+    {% if sent %}
+        {% if sent == 'true' %}
+            <div class="alert alert-success">
+                Email-ek elküldve
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+                Probléma történt az email-ek postázásakor.
+            </div>
+        {% endif %}
+    {% endif %}
+    <form action="{% url 'email_to_users' %}" method="post" id="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class='list-group py-3'>
+                {% for error in form.non_field_errors %}
+                    <li class="list-group-item list-group-item-danger">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="id_subject">Tárgy:</label>
+            <div class="col-md-4">
+                <input class="form-control" type="text" name="subject" maxlength="40" required="" id="id_subject" placeholder="Tárgy">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="id_body" class="col-md-2 col-form-label">Üzenet:</label>
+            <div class="col-md-4">
+                <textarea class="form-control" name="body" cols="40" rows="10" maxlength="300" required="" id="id_body" placeholder="Üzenet"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-10">
+                <input type="submit" value="Elküld" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
+FROM_EMAIL = 'noreply@joker.cloud.bme.hu'
+
 KEYDIR = ''
 #KEYDIR = '/usr/local/keys/'
 #KEYDIR = '/home1/karsa/keys' #sudo crontab */2 * * * * cp -a /home1/karsa/keys/. /etc/ssh/authorized_keys/

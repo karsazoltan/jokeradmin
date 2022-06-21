@@ -2,9 +2,11 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 
 from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
+from sshjoker.settings import FROM_EMAIL
 from users.models import SystemUser, UserDetail
 from users.service import adduser
 
@@ -77,3 +79,17 @@ class SetSysUserForm(forms.Form):
         self.user.userdetail.save()
         # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
         save_keys.delay(sysuser.username, True)
+
+
+class BroadcastMailForm(forms.Form):
+    subject = forms.CharField(max_length=40)
+    body = forms.CharField(max_length=300)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(BroadcastMailForm, self).__init__(*args, **kwargs)
+
+    def sendmail(self):
+        users = User.objects.filter(is_active=True).all()
+        mails = map(lambda u: u.email, users)
+        send_mail(self.cleaned_data['subject'] + ' (' + self.user + ')', self.cleaned_data['body'] + '\n\n Kérem, erre az üzenetre ne válaszoljon - JOKER GÉPHÁZ', FROM_EMAIL, mails)

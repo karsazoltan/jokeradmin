@@ -9,7 +9,7 @@ from django.shortcuts import render
 # Create your views here.
 from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
-from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm
+from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm, BroadcastMailForm
 from users.models import UserDetail, SystemUser
 
 
@@ -126,3 +126,23 @@ def inactiveusers(request):
         raise PermissionDenied
     users = User.objects.filter(is_active=False)
     return render(request, 'users/inactiveusers.html', {'users': users})
+
+
+@login_required
+def mail_to_users(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    sent = ''
+    if request.GET.get('sent'):
+        sent = request.GET.get('sent')
+    if request.method == 'POST':
+        form = BroadcastMailForm(request.POST, user=request.user.username)
+        if form.is_valid():
+            try:
+                form.sendmail()
+            except:
+                return HttpResponseRedirect(f'/mailview?sent=false')
+            return HttpResponseRedirect(f'/mailview?sent=true')
+    else:
+        form = BroadcastMailForm()
+    return render(request, 'mail/adminmail.html', {'form': form, 'sent': sent})
