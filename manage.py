@@ -9,7 +9,7 @@ from env import set_env
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sshjoker.settings')
-    # set_env()
+    set_env()
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
