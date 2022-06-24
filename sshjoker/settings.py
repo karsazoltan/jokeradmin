@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     'projects',
     'users',
     'rest_framework',
-    'shibboleth'
 ]
 
 MIDDLEWARE = [
@@ -78,20 +77,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'shibboleth.middleware.ShibbolethRemoteUserMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'shibboleth.backends.ShibbolethRemoteUserBackend',
 )
 
-SHIBBOLETH_ATTRIBUTE_MAP = {
-    "niifPersonOrgID": (True, "username"),
-    "givenName": (True, "first_name"),
-    "sn": (True, "last_name"),
-    "email": (True, "email"),
-}
 
 ROOT_URLCONF = 'sshjoker.urls'
 

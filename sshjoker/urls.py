@@ -31,5 +31,4 @@ urlpatterns = [
     path('', include('users.urls')),
     path('403/', error_handler),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('shib/', include('shibboleth.urls', namespace='shibboleth')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
