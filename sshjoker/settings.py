@@ -10,8 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+from json import loads
+from os.path import join, abspath, dirname
 from pathlib import Path
+from shutil import which
 
+from saml2 import BINDING_HTTP_POST, BINDING_HTTP_REDIRECT
+
+PUBLIC_URL = 'joker.cloud.bme.hu'
+SITE_NAME = 'jokeradmin'
 FROM_EMAIL = 'noreply@joker.cloud.bme.hu'
 
 KEYDIR = ''
@@ -67,6 +74,7 @@ INSTALLED_APPS = [
     'projects',
     'users',
     'rest_framework',
+    'djangosaml2',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +89,49 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'djangosaml2.backends.Saml2Backend',
 )
+
+#BASE_DIR = dirname(dirname(abspath(__file__)))
+SITE_ROOT = dirname(BASE_DIR)
+remote_metadata = join(SITE_ROOT, 'bme-metadata.xml')
+required_attrs = loads('["uid", "mail", "cn"]')
+optional_attrs = loads('{}')
+
+SAML_CONFIG = {
+        'xmlsec_binary': which('xmlsec1'),
+        'entityid': PUBLIC_URL + 'saml2/metadata/',
+        'attribute_map_dir': join(SITE_ROOT, 'attribute-maps'),
+        'service': {
+            'sp': {
+                'name': SITE_NAME,
+                'endpoints': {
+                    'assertion_consumer_service': [
+                        (PUBLIC_URL + 'saml2/acs/', BINDING_HTTP_POST),
+                    ],
+                    'single_logout_service': [
+                        (PUBLIC_URL + 'saml2/ls/', BINDING_HTTP_REDIRECT),
+                    ],
+                },
+                'required_attributes': required_attrs,
+                'optional_attributes': optional_attrs,
+                'want_response_signed': False,
+            },
+        },
+        'metadata': {'local': [remote_metadata], },
+        'key_file': join(SITE_ROOT, 'samlcert.key'),  # private part
+        'cert_file': join(SITE_ROOT, 'samlcert.pem'),  # public part
+        'encryption_keypairs': [{
+            'key_file': join(SITE_ROOT, 'samlcert.key'),  # private part
+            'cert_file': join(SITE_ROOT, 'samlcert.pem'),  # public part
+        }]
+    }
+
+SAML_CREATE_UNKNOWN_USER = True
+SAML_ATTRIBUTE_MAPPING = loads(
+        '{"mail": ["email"], "sn": ["last_name"], '
+        '"uid": ["username"], "cn": ["first_name"]}')
+SAML_CREATE_UNKNOWN_USER = True
 
 
 ROOT_URLCONF = 'sshjoker.urls'
