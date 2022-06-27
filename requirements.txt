@@ -29,3 +29,4 @@ wcwidth==0.2.5
 yarg==0.1.9
 djangosaml2==1.5.0
 pysaml2==7.1.2
+mysqlclient==2.1.0

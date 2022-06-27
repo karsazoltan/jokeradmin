@@ -21,6 +21,15 @@ PUBLIC_URL = 'joker.cloud.bme.hu'
 SITE_NAME = 'jokeradmin'
 FROM_EMAIL = 'noreply@joker.cloud.bme.hu'
 
+EMAIL_HOST_USER = 'jokermail@cloud.bme.hu'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', '')
+EMAIL_HOST = 'posta.ik.bme.hu'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = FROM_EMAIL
+EMAIL_FOOTER = '\n\n -------------------------------------------- \n Kérem, erre az üzenetre ne válaszoljon - JOKER ' \
+               'GÉPHÁZ '
+
 KEYDIR = ''
 #KEYDIR = '/usr/local/keys/'
 #KEYDIR = '/home1/karsa/keys' #sudo crontab */2 * * * * cp -a /home1/karsa/keys/. /etc/ssh/authorized_keys/

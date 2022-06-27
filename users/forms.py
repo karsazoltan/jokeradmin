@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 
 from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
-from sshjoker.settings import FROM_EMAIL
+from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER
 from users.models import SystemUser, UserDetail
 from users.service import adduser
 
@@ -92,4 +92,4 @@ class BroadcastMailForm(forms.Form):
     def sendmail(self):
         users = User.objects.filter(is_active=True).all()
         mails = map(lambda u: u.email, users)
-        send_mail(self.cleaned_data['subject'] + ' (' + self.user + ')', self.cleaned_data['body'] + '\n\n Kérem, erre az üzenetre ne válaszoljon - JOKER GÉPHÁZ', FROM_EMAIL, mails)
+        send_mail(self.cleaned_data['subject'] + ' (' + self.user + ')', self.cleaned_data['body'] + EMAIL_FOOTER, FROM_EMAIL, mails)
