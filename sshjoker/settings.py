@@ -17,7 +17,21 @@ from shutil import which
 
 from saml2 import BINDING_HTTP_POST, BINDING_HTTP_REDIRECT
 
-PUBLIC_URL = 'joker.cloud.bme.hu'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
+
+PUBLIC_URL = 'joker.cloud.bme.hu/'
 SITE_NAME = 'jokeradmin'
 FROM_EMAIL = 'noreply@joker.cloud.bme.hu'
 
@@ -31,15 +45,15 @@ EMAIL_FOOTER = '\n\n -------------------------------------------- \n Kérem, err
                'GÉPHÁZ '
 
 KEYDIR = ''
-#KEYDIR = '/usr/local/keys/'
-#KEYDIR = '/home1/karsa/keys' #sudo crontab */2 * * * * cp -a /home1/karsa/keys/. /etc/ssh/authorized_keys/
-#KEYDIR = '/etc/ssh/authorized_keys/'
+# KEYDIR = '/usr/local/keys/'
+# KEYDIR = '/home1/karsa/keys' #sudo crontab */2 * * * * cp -a /home1/karsa/keys/. /etc/ssh/authorized_keys/
+# KEYDIR = '/etc/ssh/authorized_keys/'
 
 MAXKEYNUM = 5
 
 ROOT_GROUP = 'adm'
-#ROOT_GROUP = 'root'
-#ROOT_GROUP = 'wheel'
+# ROOT_GROUP = 'root'
+# ROOT_GROUP = 'wheel'
 
 HOME_DIRECTORY = '/home1/'
 
@@ -60,7 +74,7 @@ LOGOUT_REDIRECT_URL = 'home'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'jokerdev.cloud.bme.hu',
+    'joker.cloud.bme.hu',
     '127.0.0.1',
     'localhost'
 ]
@@ -94,6 +108,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'djangosaml2.middleware.SamlSessionMiddleware'
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -101,51 +116,50 @@ AUTHENTICATION_BACKENDS = (
     'djangosaml2.backends.Saml2Backend',
 )
 
-#BASE_DIR = dirname(dirname(abspath(__file__)))
+# BASE_DIR = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(BASE_DIR)
 remote_metadata = join(SITE_ROOT, 'bme-metadata.xml')
-required_attrs = loads('["uid", "mail", "cn"]')
+required_attrs = loads('["niifPersonOrgID", "mail", "sn", "givenName"]')
 optional_attrs = loads('{}')
 
 SAML_CONFIG = {
-        'xmlsec_binary': which('xmlsec1'),
-        'entityid': PUBLIC_URL + 'saml2/metadata/',
-        'attribute_map_dir': join(SITE_ROOT, 'attribute-maps'),
-        'service': {
-            'sp': {
-                'name': SITE_NAME,
-                'endpoints': {
-                    'assertion_consumer_service': [
-                        (PUBLIC_URL + 'saml2/acs/', BINDING_HTTP_POST),
-                    ],
-                    'single_logout_service': [
-                        (PUBLIC_URL + 'saml2/ls/', BINDING_HTTP_REDIRECT),
-                    ],
-                },
-                'required_attributes': required_attrs,
-                'optional_attributes': optional_attrs,
-                'want_response_signed': False,
+    'xmlsec_binary': which('xmlsec1'),
+    'entityid': PUBLIC_URL + 'saml2/metadata/',
+    'attribute_map_dir': join(SITE_ROOT, 'attribute-maps'),
+    'service': {
+        'sp': {
+            'name': SITE_NAME,
+            'endpoints': {
+                'assertion_consumer_service': [
+                    ('https://' + PUBLIC_URL + 'saml2/acs/', BINDING_HTTP_POST),
+                ],
+                'single_logout_service': [
+                    ('https://' + PUBLIC_URL + 'saml2/ls/', BINDING_HTTP_REDIRECT),
+                ],
             },
+            'required_attributes': required_attrs,
+            'optional_attributes': optional_attrs,
+            'want_response_signed': False,
         },
-        'metadata': {'local': [remote_metadata], },
+    },
+    'metadata': {'local': [remote_metadata], },
+    'key_file': join(SITE_ROOT, 'samlcert.key'),  # private part
+    'cert_file': join(SITE_ROOT, 'samlcert.pem'),  # public part
+    'encryption_keypairs': [{
         'key_file': join(SITE_ROOT, 'samlcert.key'),  # private part
         'cert_file': join(SITE_ROOT, 'samlcert.pem'),  # public part
-        'encryption_keypairs': [{
-            'key_file': join(SITE_ROOT, 'samlcert.key'),  # private part
-            'cert_file': join(SITE_ROOT, 'samlcert.pem'),  # public part
-        }]
-    }
+    }]
+}
 
 SAML_CREATE_UNKNOWN_USER = True
 SAML_ATTRIBUTE_MAPPING = loads(
-        '{"mail": ["email"], "sn": ["last_name"], '
-        '"uid": ["username"], "cn": ["first_name"]}')
-SAML_CREATE_UNKNOWN_USER = True
-
+    '{"mail": ["email"], "sn": ["last_name"], '
+    '"niifPersonOrgID": ["username"], "givenName": ["first_name"]}')
+SAML_ORG_ID_ATTRIBUTE = 'niifPersonOrgID'
 
 ROOT_URLCONF = 'sshjoker.urls'
 
-LOGIN_URL = 'https://login.bme.hu/Shibboleth.sso/Login'
+# LOGIN_URL = 'https://login.bme.hu/Shibboleth.sso/Login'
 
 TEMPLATES = [
     {
@@ -165,7 +179,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sshjoker.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -192,7 +205,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ENABLE_UTC = True
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -211,7 +223,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -224,7 +235,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
