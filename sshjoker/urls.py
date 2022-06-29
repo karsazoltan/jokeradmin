@@ -19,12 +19,13 @@ from django.views.generic.base import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
 
+from sshjoker import views
 from sshjoker.views import error_handler
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', views.home, name='home'),
     path('error/', TemplateView.as_view(template_name='error.html'), name='error'),
     path('', include('jokerauth.urls')),
     path('', include('projects.urls')),

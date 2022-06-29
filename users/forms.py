@@ -1,40 +1,32 @@
 from django import forms
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 
-from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
 from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER
-from users.models import SystemUser, UserDetail
+from users.models import SystemUser, UserDetail, UserStatus
 from users.service import adduser
 
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=40)
-    password = forms.CharField(widget=forms.PasswordInput())
-    email = forms.CharField(widget=forms.EmailInput())
-    neptun = forms.CharField(max_length=6)
     description = forms.CharField(max_length=500)
 
     def clean(self):
-        user = get_user_model().objects.filter(username=self.cleaned_data['username'])
-        if user.count() == 1:
-            raise ValidationError("Már van ilyen felhasználó: " + self.cleaned_data['username'])
-        userdetail = UserDetail.objects.filter(neptun=self.cleaned_data['neptun'].upper())
-        if userdetail.count() == 1:
-            raise ValidationError("Már van ilyen NEPTUN kód: " + self.cleaned_data['neptun'].upper())
+        if len(self.cleaned_data['description']) < 30:
+            raise ValidationError("Írjon legalább 30 karakter hosszúságú leírást!")
 
-    def createUser(self):
-        user = User.objects.create_user(self.cleaned_data['username'],
-                                        self.cleaned_data['email'], self.cleaned_data['password'])
-        user.is_active = False
-        user.save()
-        user_detail = UserDetail(user=user,
-                                 neptun=self.cleaned_data['neptun'].upper(),
-                                 description=self.cleaned_data['description'])
+    def createUser(self, user):
+        user_detail = user.userdetail
+        user_detail.status = UserStatus.REQUEST
+        user_detail.description = self.cleaned_data['description']
+        self.sendmail(user.username, user.email, user.last_name + user.first_name, user.userdetail.description)
         user_detail.save()
+
+    def sendmail(self, username, email, name, desc):
+        users = User.objects.filter(is_superuser=True).all()
+        mails = map(lambda u: u.email, users)
+        send_mail("Új kérelem - Joker", f"Új felhasználó regisztrált a következő adatokkal: \n {username} - {name} \n {email} \n Kérelem törzse: {desc}" + EMAIL_FOOTER, FROM_EMAIL, mails)
 
 
 class SystemUserForm(forms.Form):
@@ -90,6 +82,6 @@ class BroadcastMailForm(forms.Form):
         super(BroadcastMailForm, self).__init__(*args, **kwargs)
 
     def sendmail(self):
-        users = User.objects.filter(is_active=True).all()
+        users = User.objects.filter(is_active=True).filter(userdetail__status__exact='OK').all()
         mails = map(lambda u: u.email, users)
         send_mail(self.cleaned_data['subject'] + ' (' + self.user + ')', self.cleaned_data['body'] + EMAIL_FOOTER, FROM_EMAIL, mails)

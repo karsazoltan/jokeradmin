@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
@@ -9,25 +10,32 @@ from django.shortcuts import render
 # Create your views here.
 from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
+from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER
 from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm, BroadcastMailForm
-from users.models import UserDetail, SystemUser
+from users.models import UserDetail, SystemUser, UserStatus
 
 
 @login_required
 def userpage(request):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         userdetail = UserDetail.objects.filter(user=request.user).get()
     except ObjectDoesNotExist:
         raise Http404('Adatok nem találhatóak')
     return render(request, 'users/user.html', {'userdetail': userdetail})
 
-
+@login_required
 def registration(request):
-    regok = False
+    if request.user.userdetail.status == UserStatus.OK:
+        return HttpResponseRedirect('')
+    regok = request.user.userdetail.status == UserStatus.REQUEST
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.createUser()
+            form.createUser(request.user)
             regok = True
             return render(request, 'users/registration.html', {'regok': regok, 'form': form})
     else:
@@ -60,7 +68,10 @@ def activateuser(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
-    user.is_active = True
+    userdetail = user.userdetail
+    userdetail.status = UserStatus.OK
+    userdetail.save()
+    send_mail('Kérelem elfogadva', f'Kérelmét elfogadták a következő felhasználóhoz: {user.username}' + EMAIL_FOOTER, FROM_EMAIL, [user.email])
     user.save()
     return HttpResponseRedirect(f'/edituser/{id}')
 
@@ -89,7 +100,8 @@ def users(request):
     if request.GET.get('search'):
         pagination = True
         userfilter = request.GET.get('search')
-    all_users = get_user_model().objects.filter(is_active=True).filter(username__contains=userfilter).order_by(
+    all_users = get_user_model().objects.filter(userdetail__status__exact=UserStatus.OK).filter(is_active=True)\
+        .filter(username__contains=userfilter).order_by(
         '-username')
     paginator = Paginator(all_users, 6)
     page_number = 1
@@ -124,7 +136,7 @@ def systemuser(request):
 def inactiveusers(request):
     if not request.user.is_superuser:
         raise PermissionDenied
-    users = User.objects.filter(is_active=False)
+    users = User.objects.filter(userdetail__status__exact=UserStatus.REQUEST).filter(is_active=True)
     return render(request, 'users/inactiveusers.html', {'users': users})
 
 
@@ -146,3 +158,9 @@ def mail_to_users(request):
     else:
         form = BroadcastMailForm()
     return render(request, 'mail/adminmail.html', {'form': form, 'sent': sent})
+
+
+def accept_status(request):
+    if request.user.userdetail.status == UserStatus.OK:
+        return HttpResponseRedirect('')
+    return render(request, 'users/accept.html')

@@ -14,8 +14,8 @@
     <h1>Felhasználói adatok</h1>
     <table>
         <tr><th>Felhasználói név: </th><td>{{ user.username }}</td></tr>
+        <tr><th>Név: </th><td>{{ user.last_name }} {{ user.first_name }}</td></tr>
         <tr><th>Web Admin jogok: </th><td>{{ user.is_superuser }}</td></tr>
-        <tr><th>Neptun: </th><td>{{ userdetail.neptun }}</td></tr>
         {% if user.email %}
             <tr><th>Email: </th><td>{{ user.email }}</td></tr>
         {% endif %}

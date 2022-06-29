@@ -7,8 +7,6 @@
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% else %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'registration' %}">Hozzáférés kérése</a>
     {% endif %}
 {% endblock %}
 

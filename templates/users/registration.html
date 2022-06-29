@@ -3,20 +3,14 @@
 {% block title %}Home{% endblock %}
 
 {% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% else %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="{% url 'registration' %}">Hozzáférés kérése</a>
-    {% endif %}
+
 {% endblock %}
 
 {% block content %}
 <h1>Hozzáférés kérése</h1>
     {% if regok %}
         <div class="alert alert-success" role="alert">
-           Regisztrációs kérelem elküldve! Belépni csak akkor tud, ha egy admin felhasználó jóváhagyta a kérést!
+           Regisztrációs kérelem elküldve! Várjon egy admin felhasználó jóváhagyására!
         </div>
     {% endif %}
     <form action="{% url 'registration' %}" method="post" id="form">
@@ -28,30 +22,6 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="id_comment">Felhasználói név:</label>
-            <div class="col-md-4">
-                <input class="form-control" type="text" name="username" maxlength="40" required="" id="id_username" placeholder="Felhasználói név">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="id_email" class="col-md-2 col-form-label">Email-cím:</label>
-            <div class="col-md-4">
-                <input class="form-control" type="email" name="email" maxlength="80" required="" id="id_email" placeholder="Email cím">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="id_neptun" class="col-md-2 col-form-label">Neptun kód:</label>
-            <div class="col-md-4">
-                <input class="form-control" type="text" name="neptun" maxlength="6" required="" id="id_neptun" placeholder="NEPTUN">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="id_password" class="col-md-2 col-form-label">Jelszó:</label>
-            <div class="col-md-4">
-                <input class="form-control" type="password" name="password" required="" id="id_password" placeholder="Jelszó">
-            </div>
-        </div>
         <div class="form-group row">
             <label for="id_description" class="col-md-2 col-form-label">Jelentkezés indoklása:</label>
             <div class="col-md-4">

@@ -12,16 +12,16 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     http_method_names = ['get']
     filter_backends = [filters.SearchFilter]
-    search_fields = ['^username', '^userdetail__neptun']
+    search_fields = ['^username', '^first_name', '^last_name']
 
 
 class UserDetailViewSet(viewsets.ModelViewSet):
-    queryset = UserDetail.objects.all().order_by('-neptun')
+    queryset = UserDetail.objects.all().order_by('-user__username')
     serializer_class = UserDetailSerializer
     permission_classes = [permissions.IsAdminUser]
     http_method_names = ['get']
     filter_backends = [filters.SearchFilter]
-    search_fields = ['^neptun']
+    search_fields = ['^user__username']
 
 
 class SystemUserViewSet(viewsets.ModelViewSet):

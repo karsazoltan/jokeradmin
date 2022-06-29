@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Inaktív felhasználók kezelése</h1>
+    <h1>Kérelmek</h1>
     <div class="card-columns">
         {% for user in users %}
             <div class="card">
@@ -24,7 +24,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {{ user.userdetail.neptun }} / {{ user.email }}
+                    <p><b>{{ user.last_name }} {{ user.first_name }} / <a href="mailto:{{ user.email }}">{{ user.email }}</a></b></p>
+                    <p>{{ user.userdetail.description }}</p>
                 </div>
             </div>
         {% endfor %}

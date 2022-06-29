@@ -12,7 +12,8 @@ router.register(r'rest/sysuser', restapi.SystemUserViewSet)
 urlpatterns = [
     path('user/', include(router.urls)),
     path('user', views.userpage, name='user'),
-    path('registration', views.registration, name='registration'),
+    path('registration', views.registration, name='registration'), # eduid-s azonosítás lesz
+    path('accept-status', views.accept_status, name='accept-status'),
     path('systemuser', views.systemuser, name='systemuser'),
     path('users', views.users, name='users'),
     path('inactiveusers', views.inactiveusers, name='inactiveusers'),

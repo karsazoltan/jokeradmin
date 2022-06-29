@@ -7,10 +7,15 @@ from django.shortcuts import render
 from jokerauth.forms import SSHKeyForm, AdminSSHKeyForm
 from jokerauth.models import SSHKey
 from sshjoker.settings import MAXKEYNUM
+from users.models import UserStatus
 
 
 @login_required
 def sshkey(request):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     keys = SSHKey.objects.filter(user=request.user)
     if request.method == 'POST':
         form = SSHKeyForm(request.POST, request=request)
@@ -54,6 +59,10 @@ def adminkeys(request):
 
 @login_required
 def activatekey(request, id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         key = SSHKey.objects.get(pk=id)
     except ObjectDoesNotExist:
@@ -67,6 +76,8 @@ def activatekey(request, id):
 
 @login_required
 def adminactivate(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     try:
         key = SSHKey.objects.get(pk=id)
     except ObjectDoesNotExist:
@@ -80,6 +91,10 @@ def adminactivate(request, id):
 
 @login_required
 def deletekey(request, id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         key = SSHKey.objects.get(pk=id)
     except ObjectDoesNotExist:
@@ -93,6 +108,8 @@ def deletekey(request, id):
 
 @login_required
 def admindelete(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     try:
         key = SSHKey.objects.get(pk=id)
     except ObjectDoesNotExist:

@@ -113,7 +113,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'djangosaml2.backends.Saml2Backend',
+    'users.backend.ModifiedSaml2Backend',
 )
 
 # BASE_DIR = dirname(dirname(abspath(__file__)))

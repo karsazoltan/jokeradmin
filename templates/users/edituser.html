@@ -15,13 +15,13 @@
     <h2>Adatok</h2>
     <table>
         <tr><th>Felhasználói név: </th><td><span class="badge bg-success" style="font-size: 100%">{{ userinfo.username }}</span></td></tr>
-        <tr><th>Aktív: </th><td>{{ userinfo.is_active }}</td></tr>
+        <tr><th>Név: </th><td>{{ userinfo.last_name }} {{ userinfo.first_name }}</td></tr>
+        <tr><th>Aktív kérelem: </th><td>{% if userinfo.userdetail.status == 'RE' %}True{% else %}False{% endif %} </td></tr>
         <tr><th>Web Admin jogok: </th><td>{{ userinfo.is_superuser }}</td></tr>
         {% if user.email %}
             <tr><th>Email: </th><td>{{ user.email }}</td></tr>
         {% endif %}
         {% if userinfo.userdetail %}
-            <tr><th>Neptun: </th><td>{{ userinfo.userdetail.neptun }}</td></tr>
             {% if userinfo.userdetail.systemuser %}
                 <tr>
                     <th>A következő hpc felhasználókhoz társítva: </th>
@@ -58,9 +58,6 @@
                     <td>Nincs rendszerfelhasználóhoz adva</td>
                 </tr>
             {% endif %}
-
-        {% else %}
-            <tr><th>Neptun: </th><td>További adatok nincsenek</td></tr>
         {% endif %}
     </table>
     <h3>Linux felhasználó társítása</h3>
@@ -127,7 +124,7 @@
         {% endfor %}
     </div>
     {% endif %}
-    {% if not userinfo.is_active %}
+    {% if userinfo.userdetail.status == 'RE' %}
         <h3>Aktiválás</h3>
         {% if userinfo.userdetail.systemuser.all %}
             <a href="{% url 'activateuser' userinfo.id %}"><button type="button" class="btn btn-success">Aktiválás</button></a>

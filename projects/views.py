@@ -9,10 +9,15 @@ from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
 from projects.forms import AddPartnerForm, AdminProjectForm, EditDescription
 from projects.models import Project
+from users.models import UserStatus
 
 
 @login_required
 def projects(request):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     projects = Project.objects.filter(owner=request.user)
     partnerprojects = request.user.projects.all()
     return render(request, 'projects/project.html',
@@ -68,6 +73,10 @@ def adminprojects(request):
 
 @login_required
 def details(request, id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     project = Project.objects.get(pk=id)
     partners = project.users.all()
     users = get_user_model().objects.all()
@@ -84,6 +93,10 @@ def details(request, id):
 
 @login_required
 def deletepartner(request, project_id, partner_id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         project = Project.objects.get(pk=project_id)
         partner = get_user_model().objects.get(pk=partner_id)
@@ -102,6 +115,10 @@ def deletepartner(request, project_id, partner_id):
 
 @login_required
 def edit_description(request, id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         project = Project.objects.get(pk=id)
         if request.user == project.owner or request.user.is_superuser:
@@ -120,6 +137,10 @@ def edit_description(request, id):
 
 @login_required
 def set_public(request, id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         project = Project.objects.get(pk=id)
         if request.user == project.owner or request.user.is_superuser:
@@ -137,6 +158,10 @@ def set_public(request, id):
 
 @login_required
 def deleteproject(request, id):
+    if request.user.userdetail.status == UserStatus.INACTIVE:
+        return HttpResponseRedirect('registration')
+    if request.user.userdetail.status == UserStatus.REQUEST:
+        return HttpResponseRedirect('accept-status')
     try:
         project = Project.objects.get(pk=id)
     except ObjectDoesNotExist:
