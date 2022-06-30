@@ -20,5 +20,8 @@ urlpatterns = [
     path('edituser/<int:id>/', views.edituser, name='edituser'),
     path('activateuser/<int:id>/', views.activateuser, name='activateuser'),
     path('edituser/<int:webuser_id>/deletesysuser/<int:sysuser_id>/', views.delete_sysuser_from_user, name='delete_sys_from_webuser'),
-    path('mailview', views.mail_to_users, name='email_to_users')
+    path('jupyterhub', views.jupyterhub, name='jupyterhub'),
+    path('mailview', views.mail_to_users, name='email_to_users'),
+    path('userdata', views.userdata, name='userdata'),
+    path('setpreferred/<int:sysuser_id>/', views.set_preferred_user, name='set_preferred')
 ]

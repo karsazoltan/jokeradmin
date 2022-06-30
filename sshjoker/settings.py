@@ -28,7 +28,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'DEBUG',
     },
 }
 
@@ -94,6 +94,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
+    'corsheaders',
     'jokerauth',
     'projects',
     'users',
@@ -109,13 +111,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'djangosaml2.middleware.SamlSessionMiddleware'
+    'djangosaml2.middleware.SamlSessionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
     'users.backend.ModifiedSaml2Backend',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
+OAUTH2_PROVIDER = {
+    "PKCE_REQUIRED": False
+}
+
 
 # BASE_DIR = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(BASE_DIR)
@@ -158,6 +169,8 @@ SAML_ATTRIBUTE_MAPPING = loads(
     '"niifPersonOrgID": ["username"], "givenName": ["first_name"]}')
 SAML_ORG_ID_ATTRIBUTE = 'niifPersonOrgID'
 SAML_DEFAULT_BINDING = saml2.BINDING_HTTP_REDIRECT
+
+SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'sshjoker.urls'

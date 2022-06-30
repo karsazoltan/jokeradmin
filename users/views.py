@@ -1,10 +1,12 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -27,6 +29,7 @@ def userpage(request):
         raise Http404('Adatok nem találhatóak')
     return render(request, 'users/user.html', {'userdetail': userdetail})
 
+
 @login_required
 def registration(request):
     if request.user.userdetail.status == UserStatus.OK:
@@ -48,7 +51,7 @@ def edituser(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
-    systemusers = SystemUser.objects.all().filter(project__isnull=True)
+    systemusers = user.userdetail.systemuser
     prevpage = '/users'
     if request.GET.get('prev'):
         prevpage = request.GET.get('prev')
@@ -71,7 +74,8 @@ def activateuser(request, id):
     userdetail = user.userdetail
     userdetail.status = UserStatus.OK
     userdetail.save()
-    send_mail('Kérelem elfogadva', f'Kérelmét elfogadták a következő felhasználóhoz: {user.username}' + EMAIL_FOOTER, FROM_EMAIL, [user.email])
+    send_mail('Kérelem elfogadva', f'Kérelmét elfogadták a következő felhasználóhoz: {user.username}' + EMAIL_FOOTER,
+              FROM_EMAIL, [user.email])
     user.save()
     return HttpResponseRedirect(f'/edituser/{id}')
 
@@ -100,7 +104,7 @@ def users(request):
     if request.GET.get('search'):
         pagination = True
         userfilter = request.GET.get('search')
-    all_users = get_user_model().objects.filter(userdetail__status__exact=UserStatus.OK).filter(is_active=True)\
+    all_users = get_user_model().objects.filter(userdetail__status__exact=UserStatus.OK).filter(is_active=True) \
         .filter(username__contains=userfilter).order_by(
         '-username')
     paginator = Paginator(all_users, 6)
@@ -160,7 +164,38 @@ def mail_to_users(request):
     return render(request, 'mail/adminmail.html', {'form': form, 'sent': sent})
 
 
+@login_required
 def accept_status(request):
     if request.user.userdetail.status == UserStatus.OK:
         return HttpResponseRedirect('')
     return render(request, 'users/accept.html')
+
+
+@login_required
+def userdata(request):
+    user = request.user
+    return HttpResponse(
+        json.dumps({
+            'webuser': user.username,
+            'username': user.userdetail.preferred.username
+        }),
+        content_type='application/json'
+    )
+
+
+def set_preferred_user(request, sysuser_id):
+    systemusers = request.user.userdetail.systemuser.all()
+    picksysuser = SystemUser.objects.get(pk=sysuser_id)
+    if picksysuser not in systemusers:
+        raise PermissionError()
+    userdetail = request.user.userdetail
+    userdetail.preferred = picksysuser
+    userdetail.save()
+    return HttpResponseRedirect('http://127.0.0.1:8010/hub/oauth_login?&next=')
+
+
+@login_required
+def jupyterhub(request):
+    systemusers = request.user.userdetail.systemuser.all
+    preferred = request.user.userdetail.preferred
+    return render(request, 'users/jupyterhub.html', {'systemusers': systemusers, 'preferred': preferred})
