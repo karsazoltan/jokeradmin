@@ -20,7 +20,7 @@ class RegistrationForm(forms.Form):
         user_detail = user.userdetail
         user_detail.status = UserStatus.REQUEST
         user_detail.description = self.cleaned_data['description']
-        self.sendmail(user.username, user.email, user.last_name + user.first_name, user.userdetail.description)
+        self.sendmail(user.username, user.email, user.last_name + ' ' + user.first_name, user.userdetail.description)
         user_detail.save()
 
     def sendmail(self, username, email, name, desc):

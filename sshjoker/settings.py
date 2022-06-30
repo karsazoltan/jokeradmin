@@ -15,6 +15,7 @@ from os.path import join, abspath, dirname
 from pathlib import Path
 from shutil import which
 
+import saml2
 from saml2 import BINDING_HTTP_POST, BINDING_HTTP_REDIRECT
 
 LOGGING = {
@@ -156,6 +157,8 @@ SAML_ATTRIBUTE_MAPPING = loads(
     '{"mail": ["email"], "sn": ["last_name"], '
     '"niifPersonOrgID": ["username"], "givenName": ["first_name"]}')
 SAML_ORG_ID_ATTRIBUTE = 'niifPersonOrgID'
+SAML_DEFAULT_BINDING = saml2.BINDING_HTTP_REDIRECT
+SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'sshjoker.urls'
 
