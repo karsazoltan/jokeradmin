@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Rendszerfelhasználók{% endblock %}
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>Jupyterhub</h1>
+    <div class="alert alert-danger">
+        <p>A JupyterHub felületet a társított rendszer-felhasználók alatt lehet használni. Válasszon a listából!</p>
+        <p>Másik felhasználóra való váltásnál lépjen ki a JupyterHub felületről!!</p>
+    </div>
+    <ul class="list-group" style="display:inline-block;">
+        {% for sys in systemusers %}
+             <a href="{% url 'set_preferred' sys.id %}">
+                 <li class="list-group-item">
+                    <img height="30px" src="{% static 'assets/logo.png' %}" >
+                       <b>{{ sys.username }}</b>
+                {% if preferred and preferred.username == sys.username %}
+                    (Legutóbb használt)
+                {% endif %}
+                 </li>
+             </a>
+        {% endfor %}
+    </ul>
+{% endblock %}

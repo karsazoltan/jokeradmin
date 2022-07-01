@@ -70,7 +70,7 @@
                                     </div>
                                     </li>
                                 {% endif %}
-                                <li class="nav-item"><a class="nav-link" href="https://joker.cloud.bme.hu:444"><img height="30px" src="{% static 'assets/logo.png' %}" ></a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'jupyterhub' %}"><img height="30px" src="{% static 'assets/logo.png' %}" ></a></li>
                                 {% if user.is_authenticated %}
                                     <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Kijelentkezés</a></li>
                                 {% else %}
