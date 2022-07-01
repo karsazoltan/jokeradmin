@@ -12,7 +12,7 @@ class UserStatus(models.TextChoices):
 class UserDetail(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, null=False)
     systemuser = models.ManyToManyField('SystemUser', related_name='webusers')
-    preferred = models.OneToOneField('SystemUser', null=True, on_delete=models.CASCADE)
+    preferred = models.ForeignKey('SystemUser', null=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=500, null=True)
     status = models.CharField(
         max_length=2, choices=UserStatus.choices, default=UserStatus.INACTIVE

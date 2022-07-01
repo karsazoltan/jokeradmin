@@ -8,8 +8,8 @@ c.GenericOAuthenticator.oauth_callback_url = 'http://127.0.0.1:8010/hub/oauth_ca
 
 import os
 # What is the client ID and client secret for Jupyterhub provided Django?
-c.GenericOAuthenticator.client_id = os.environ.get('OAUTH_CLIENT', '')
-c.GenericOAuthenticator.client_secret = os.environ.get('OAUTH_SECRET', '')
+c.GenericOAuthenticator.client_id = 'UMh0UppSzFKg1XWNr0BD9MNHLJ8OsRdsKwGJudjw'
+c.GenericOAuthenticator.client_secret = 'G4OFf6LBHhuLIClW547UwAj73kO2f685KUEtCcdyrbSnBCgp8y8fntUbKGXmbrl4QBtJGby7TBx2Fplbgrgh1QiwXPjLqSLw9EqA1eY9ZRuRCZc2OH26Aas5uwUUcujt'
 
 # Where can Jupyterhub get the token from?
 c.GenericOAuthenticator.token_url = 'http://127.0.0.1:8000/o/token/'

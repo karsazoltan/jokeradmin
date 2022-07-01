@@ -13,19 +13,20 @@
 {% block content %}
     <h1>Jupyterhub</h1>
     <div class="alert alert-danger">
-        A JupyterHub felületet a társított rendszer-felhasználók alatt lehet használni. Válasszon a listából!
+        <p>A JupyterHub felületet a társított rendszer-felhasználók alatt lehet használni. Válasszon a listából!</p>
+        <p>Másik felhasználóra való váltásnál lépjen ki a JupyterHub felületről!!</p>
     </div>
-    <ul class="list-group">
+    <ul class="list-group" style="display:inline-block;">
         {% for sys in systemusers %}
-            <li class="list-group-item">
-                <a href="{% url 'set_preferred' sys.id %}">
-                    <img height="30px" src="{% static 'assets/logo.png' %}" > {{ sys.username }}
-
-                </a>
+             <a href="{% url 'set_preferred' sys.id %}">
+                 <li class="list-group-item">
+                    <img height="30px" src="{% static 'assets/logo.png' %}" >
+                       <b>{{ sys.username }}</b>
                 {% if preferred and preferred.username == sys.username %}
                     (Legutóbb használt)
                 {% endif %}
-            </li>
+                 </li>
+             </a>
         {% endfor %}
     </ul>
 {% endblock %}

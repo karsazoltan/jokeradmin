@@ -10,4 +10,5 @@ class ModifiedSaml2Backend(Saml2Backend):
                                  description='',
                                  status=UserStatus.INACTIVE)
         user_detail.save()
+        user.save()
         return super().save_user(user, *args, **kwargs)

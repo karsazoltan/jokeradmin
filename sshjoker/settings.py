@@ -28,7 +28,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG',
+        'level': 'WARNING',
     },
 }
 
@@ -122,6 +122,7 @@ AUTHENTICATION_BACKENDS = (
     'users.backend.ModifiedSaml2Backend',
 )
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False

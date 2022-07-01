@@ -7,12 +7,12 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
-from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER
+from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER, PUBLIC_URL
 from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm, BroadcastMailForm
 from users.models import UserDetail, SystemUser, UserStatus
 
@@ -51,7 +51,7 @@ def edituser(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
     user = get_user_model().objects.get(pk=id)
-    systemusers = user.userdetail.systemuser
+    systemusers = SystemUser.objects.all()
     prevpage = '/users'
     if request.GET.get('prev'):
         prevpage = request.GET.get('prev')
@@ -191,11 +191,11 @@ def set_preferred_user(request, sysuser_id):
     userdetail = request.user.userdetail
     userdetail.preferred = picksysuser
     userdetail.save()
-    return HttpResponseRedirect('http://127.0.0.1:8010/hub/oauth_login?&next=')
+    return redirect(f'http://{PUBLIC_URL}hub/oauth_login?&next=')
 
 
 @login_required
 def jupyterhub(request):
-    systemusers = request.user.userdetail.systemuser.all
+    systemusers = request.user.userdetail.systemuser.all()
     preferred = request.user.userdetail.preferred
     return render(request, 'users/jupyterhub.html', {'systemusers': systemusers, 'preferred': preferred})
