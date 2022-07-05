@@ -101,7 +101,7 @@ def deletepartner(request, project_id, partner_id):
         project = Project.objects.get(pk=project_id)
         partner = get_user_model().objects.get(pk=partner_id)
     except ObjectDoesNotExist:
-        raise Http404('Objektum nem található')
+        raise Http404()
     if request.user == project.owner or request.user.is_superuser:
         project.users.remove(partner)
         partner.userdetail.systemuser.remove(project.system_user)
@@ -127,11 +127,11 @@ def edit_description(request, id):
                 if form.is_valid():
                     form.edit_description(project)
             else:
-                raise Http404('Nincs ilyen művelet')
+                raise Http404()
         else:
             raise PermissionDenied
     except ObjectDoesNotExist:
-        raise Http404('Objektum nem található')
+        raise Http404()
     return HttpResponseRedirect('/projects/' + str(id))
 
 
@@ -152,7 +152,7 @@ def set_public(request, id):
         else:
             raise PermissionDenied
     except ObjectDoesNotExist:
-        raise Http404('Objektum nem található')
+        raise Http404()
     return HttpResponseRedirect('/projects/' + str(id))
 
 
@@ -165,7 +165,7 @@ def deleteproject(request, id):
     try:
         project = Project.objects.get(pk=id)
     except ObjectDoesNotExist:
-        raise Http404('Projekt nem található')
+        raise Http404()
     if request.user == project.owner or request.user.is_superuser:
         for partner in project.users.all():
             partner.userdetail.systemuser.remove(project.system_user)

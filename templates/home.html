@@ -2,15 +2,7 @@
 
 {% block title %}Home{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-    <h1>Kezdőlap</h1>
+    <h1>{% trans 'Home' %}</h1>
 
 {% endblock %}

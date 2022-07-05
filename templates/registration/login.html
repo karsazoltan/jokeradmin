@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}Bejelentkezés{% endblock %}
 
 {% block navbar %}
@@ -7,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Bejelentkezés</h1>
+    <h1>{% trans 'Login page' %}</h1>
 <form method="post">
   {% csrf_token %}
     {% if form.non_field_errors %}
@@ -18,20 +19,20 @@
         </ul>
     {% endif %}
     <div class="form-group row">
-    <label for="id_username" class="col-sm-2 col-form-label">Felhasználónév</label>
+    <label for="id_username" class="col-sm-2 col-form-label">{% trans 'username' %}</label>
     <div class="col-sm-3">
-      <input type="text" name="username" autofocus="" class="form-control" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username" placeholder="Felhasználónév">
+      <input type="text" name="username" autofocus="" class="form-control" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username" placeholder="{% trans 'username' %}">
     </div>
   </div>
   <div class="form-group row">
-    <label for="inputPassword3" class="col-sm-2 col-form-label">Jelszó</label>
+    <label for="inputPassword3" class="col-sm-2 col-form-label">{% trans 'password' %}</label>
     <div class="col-sm-3">
-      <input type="password" class="form-control" name="password" autocomplete="current-password" required="" id="id_password" placeholder="Jelszó">
+      <input type="password" class="form-control" name="password" autocomplete="current-password" required="" id="id_password" placeholder="{% trans 'password' %}">
     </div>
   </div>
   <div class="form-group row">
     <div class="col-sm-2">
-      <button type="submit" class="btn btn-primary">Bejelentkezés</button>
+      <button type="submit" class="btn btn-primary">{% trans 'Login' %}</button>
     </div>
       <div class="col-sm-2">
       <a href="{% url 'saml2_login' %}"><button type="button" class="btn"><img height="30px" src="{% static 'assets/eduid.png' %}" ></button></a>

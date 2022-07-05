@@ -1,21 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}Home{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-    <h1>SSH Kulcsok</h1>
+    <h1>{% trans 'SSH Keys' %}</h1>
     {% if user.userdetail.systemuser %}
         <table>
         <tr>
-            <th>HPC társított fiókok: </th>
+            <th>{% trans 'Linux users' %}</th>
             <td><h5>
                 {% for sysuser in user.userdetail.systemuser.all %}
                     {% if sysuser.issudo %}
@@ -39,11 +32,11 @@
         </tr>
         </table>
         <div class="alert alert-danger">
-            A fenti linux felhasználók nevei alatt tud bejelentkezni a hpc központi gépére, a lent megadott ssh kulcsok segítségével.
+            {% trans 'You can log in to the hpc central machine under the names of the linux users above, using the ssh keys given below.' %}
         </div>
     {% else %}
         <div class="alert alert-danger">
-            A fiókhoz még nem tartozik társított rendszerfelhasználó (linux user). Kérje meg az egyik admin felhasználót, hogy állítsa be.
+            {% trans 'no linux user' %}
         </div>
     {% endif %}
     <div class="row">
@@ -87,10 +80,10 @@
                 </div>
             </div>
         {% empty %}
-            üres
+            {% trans 'empty' %}
         {% endfor %}
     </div>
-    <h2>Új kulcs megadása</h2>
+    <h2>{% trans 'Add new key' %}</h2>
     <form action="{% url 'sshkeys' %}" method="post" id="form">
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -101,20 +94,20 @@
             </ul>
         {% endif %}
         <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="id_comment">Megjegyzés:</label>
+            <label class="col-md-2 col-form-label" for="id_comment">{% trans 'Comment' %}</label>
             <div class="col-md-4">
-                <input class="form-control" type="text" name="comment" maxlength="100" required="" id="id_comment" placeholder="Megjegyzés">
+                <input class="form-control" type="text" name="comment" maxlength="100" required="" id="id_comment" placeholder="{% trans 'Comment' %}">
             </div>
         </div>
         <div class="form-group row">
-            <label for="id_pubkey" class="col-md-2 col-form-label">Kulcs:</label>
+            <label for="id_pubkey" class="col-md-2 col-form-label">{% trans 'Key' %}</label>
             <div class="col-md-4">
-                <textarea class="form-control" name="pubkey" cols="40" rows="10" maxlength="1000" required="" id="id_pubkey" placeholder="Publikus RSA kulcs"></textarea>
+                <textarea class="form-control" name="pubkey" cols="40" rows="10" maxlength="1000" required="" id="id_pubkey" placeholder="{% trans 'RSA-Key' %}"></textarea>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-md-10">
-                <input type="submit" value="Rendben" class="btn btn-primary" {% if not user.userdetail.systemuser %} disabled {% endif %}>
+                <input type="submit" value="{% trans 'OK' %}" class="btn btn-primary" {% if not user.userdetail.systemuser %} disabled {% endif %}>
             </div>
         </div>
     </form>
@@ -130,7 +123,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger" style="text-align: justify">
-                        Az itt beállított kulcsok minden páros percben kerülnek érvényesítésre. <b>Ezért érdemes a beállítás után 2 percet várni</b>, majd azután csatlakozással próbálkozni. Minden felhasználó maximum {{ maxkeynum }} db SSH - RSA kulcsot adhat meg! Ha ezen felül szeretne kulcsokat használni, kérje meg erre az egyik admin felhasználót, vagy törölje a ritkán használtakat.
+                        {% trans 'Enter the keys here for validation every even minute. That's why it's worth waiting 2 minutes after setting up and then trying to connect. On the admin page, we can also assign SSH keys to individual users in addition to the maximum number of keys.' %}
                     </div>
                     <ul class="list-group">
                         <li class="list-group-item border-top"><button type="button" class="btn me-3"><i class="bi bi-justify"></i></button>Részletek megnyitása</li>

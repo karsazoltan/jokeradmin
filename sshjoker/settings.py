@@ -123,11 +123,15 @@ AUTHENTICATION_BACKENDS = (
 )
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "https://login.bme.hu",
+    "https://joker.cloud.bme.hu",
+    "https://joker.cloud.bme.hu:444",
+]
 OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False
 }
-
 
 # BASE_DIR = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(BASE_DIR)
@@ -243,7 +247,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'hu'
 
 TIME_ZONE = 'Europe/Budapest'
 

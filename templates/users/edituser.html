@@ -1,30 +1,22 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}{{ userinfo.username }}{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-    <h1>Felhasználó szerkesztése</h1>
-    <h2>Adatok</h2>
+    <h1>{% trans 'Edit webuser' %}</h1>
     <table>
-        <tr><th>Felhasználói név: </th><td><span class="badge bg-success" style="font-size: 100%">{{ userinfo.username }}</span></td></tr>
-        <tr><th>Név: </th><td>{{ userinfo.last_name }} {{ userinfo.first_name }}</td></tr>
-        <tr><th>Aktív kérelem: </th><td>{% if userinfo.userdetail.status == 'RE' %}True{% else %}False{% endif %} </td></tr>
-        <tr><th>Web Admin jogok: </th><td>{{ userinfo.is_superuser }}</td></tr>
+        <tr><th>{% trans 'Username' %}</th><td><span class="badge bg-success" style="font-size: 100%">{{ userinfo.username }}</span></td></tr>
+        <tr><th>{% trans 'Name' %}</th><td>{{ userinfo.last_name }} {{ userinfo.first_name }}</td></tr>
+        <tr><th>{% trans 'Request status' %} </th><td>{% if userinfo.userdetail.status == 'RE' %}True{% else %}False{% endif %} </td></tr>
+        <tr><th>{% trans 'Superuser' %} </th><td>{{ userinfo.is_superuser }}</td></tr>
         {% if user.email %}
             <tr><th>Email: </th><td>{{ user.email }}</td></tr>
         {% endif %}
         {% if userinfo.userdetail %}
             {% if userinfo.userdetail.systemuser %}
                 <tr>
-                    <th>A következő hpc felhasználókhoz társítva: </th>
+                    <th>{% trans 'Associated with the following linux users: ' %}</th>
                     <td>
                             {% for sysuser in userinfo.userdetail.systemuser.all %}
                                 {% if sysuser.issudo %}
@@ -45,24 +37,24 @@
                             {% endfor %}
                     </td>
                 </tr>
-                <tr><th>Jelenkező szöveg: </th><td>
+                <tr><th>{% trans 'Request description' %}</th><td>
                     {% if userinfo.userdetail.description %}
                         {{ userinfo.userdetail.description }}
                     {% else %}
-                        nincs megadva
+                        {% trans 'empty' %}
                     {% endif %}
                 </td></tr>
             {% else %}
                 <tr>
-                    <th>Systemuser: </th>
-                    <td>Nincs rendszerfelhasználóhoz adva</td>
+                    <th>{% trans 'Linux users' %}</th>
+                    <td>{% trans 'empty' %}</td>
                 </tr>
             {% endif %}
         {% endif %}
     </table>
-    <h3>Linux felhasználó társítása</h3>
+    <h3>{% trans 'Edit linux users' %}</h3>
     <div class="alert alert-danger" style="text-align: justify">
-       A felhasználó cseréjével az ssh kulcsok is az új linux felhasználóhoz fognak kerülni! Annak érvényességre jutása kb. 2 perc. Vigyázzon, ne társítson superuser felhasználót egy kevésbé ismert webes felhasználóhoz!
+        {% trans 'By changing the user, the ssh keys will also be transferred to the new linux user! Its entry into force approx. 2 minutes. Be careful not to associate a superuser with a lesser-known web user!' %}
     </div>
     <form action="{% url 'edituser' userinfo.id%}" method="post" id="form">
         {% csrf_token %}
@@ -74,7 +66,7 @@
             </ul>
         {% endif %}
         <div class="form-group row">
-            <label for="id_systemuser">Linux felhasználók (nincsenek projekthez társítva):</label>
+            <label for="id_systemuser">{% trans 'Linux users (not associated with an project user)' %}</label>
             <div class="form-group col-md-4 mb-0">
                 <select class="input-group custom-select" id="id_systemuser" name="systemuser" autocomplete="off">
                         {% if not userinfo.userdetail.systemuser.all %}
@@ -89,13 +81,13 @@
         <div class="form-group row">
             <div class="form-group col-md-2">
                 <input type="submit" value="Társítás" class="btn btn-primary">
-                <a href="{% url 'systemuser' %}"><button type="button" class="btn btn-info">Új Linux felhasználó</button></a>
+                <a href="{% url 'systemuser' %}"><button type="button" class="btn btn-info">{% trans 'New linux user' %}</button></a>
             </div>
         </div>
     </form>
-    <h3>Társított linux felhasználók</h3>
+    <h3>{% trans 'Linux users' %}</h3>
     {% if not userinfo.userdetail.systemuser.all %}
-        <p><i>Nincs társított linux felhasználó.</i></p>
+        <p><i>{% trans 'empty' %}</i></p>
     {% else %}
     <div class="card-columns">
         {% for sysuser in userinfo.userdetail.systemuser.all %}
@@ -114,10 +106,10 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    Root felhasználó: {{ sysuser.issudo }}
+                    {% trans 'Root user: ' %} {{ sysuser.issudo }}
                     {% if sysuser.project %}
-                        <br> Projekt címe: {{ sysuser.project.title }} <br>
-                        <i>Amíg a projekt tulajdonosa vagy tagja, nem távolítható el.</i>
+                        <br> {% trans 'associated project: ' %} {{ sysuser.project.title }} <br>
+                        <i>{% trans 'As long as you are the owner or member of the project, it cannot be removed.' %}</i>
                     {% endif %}
                 </div>
             </div>
@@ -125,12 +117,12 @@
     </div>
     {% endif %}
     {% if userinfo.userdetail.status == 'RE' %}
-        <h3>Aktiválás</h3>
+        <h3>{% trans 'Activate' %}</h3>
         {% if userinfo.userdetail.systemuser.all %}
             <a href="{% url 'activateuser' userinfo.id %}"><button type="button" class="btn btn-success">Aktiválás</button></a>
         {% else %}
             <div class="alert alert-danger" style="text-align: justify">
-                Ameddig nincs legalább egy linux felhasználóhoz társítva, nem aktiválható! Adja hozzá egy szabad projekthez partnerként, úgy is kaphat hpc rendszer felhasználói fiókot.
+                {% trans 'As long as it is not associated with at least one Linux user, it cannot be activated! Add it to a project as a partner, and you can also get an hpc system user account.' %}
             </div>
         {% endif %}
     {% endif %}
@@ -149,10 +141,10 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item link-danger">Admin</li>
             <li class="breadcrumb-item" aria-current="page">
-                <a href="{% url 'users' %}">Webes felhasználók</a>
+                <a href="{% url 'users' %}">{% trans 'Webuser' %}</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ userinfo.username }}</li>
-            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+            <li class="ml-auto link-danger"><b>{% trans 'ADMIN-SITE' %}</b></li>
         </ol>
     </nav>
 {% endblock %}

@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-04 14:10+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: base.html:32
+msgid "SSH Keys"
+msgstr ""
+
+#: base.html:33
+msgid "Projects"
+msgstr ""
+
+#: base.html:34
+msgid "My user"
+msgstr ""
+
+#: home.html:6
+msgid "Home"
+msgstr ""
+
+#: users/accept.html:11
+msgid ""
+"Registration request sent! Wait for approval from an admin user! We will "
+"send you a notification by email if the request has been accepted."
+msgstr ""
+
+#: users/edituser.html:7
+msgid "Edit webuser"
+msgstr ""
+
+#: users/edituser.html:9 users/user.html:16
+msgid "Username"
+msgstr ""
+
+#: users/edituser.html:10 users/user.html:17
+msgid "Name"
+msgstr ""
+
+#: users/edituser.html:11
+msgid "Request status"
+msgstr ""
+
+#: users/edituser.html:12 users/user.html:18
+msgid "Superuser"
+msgstr ""
+
+#: users/edituser.html:19 users/user.html:24
+msgid "Associated with the following linux users: "
+msgstr ""
+
+#: users/edituser.html:40
+msgid "Request description"
+msgstr ""
+
+#: users/edituser.html:44 users/edituser.html:50 users/edituser.html:90
+#: users/systemuser.html:68 users/user.html:48 users/users.html:61
+msgid "empty"
+msgstr ""
+
+#: users/edituser.html:49 users/edituser.html:88 users/jupyterhub.html:5
+#: users/systemuser.html:38 users/systemuser.html:79 users/user.html:47
+#: users/users.html:49
+msgid "Linux users"
+msgstr ""
+
+#: users/edituser.html:55
+msgid "Edit linux users"
+msgstr ""
+
+#: users/edituser.html:57
+msgid ""
+"By changing the user, the ssh keys will also be transferred to the new linux "
+"user! Its entry into force approx. 2 minutes. Be careful not to associate a "
+"superuser with a lesser-known web user!"
+msgstr ""
+
+#: users/edituser.html:69
+msgid "Linux users (not associated with an project user)"
+msgstr ""
+
+#: users/edituser.html:84 users/systemuser.html:7
+msgid "New linux user"
+msgstr ""
+
+#: users/edituser.html:109
+msgid "Root user: "
+msgstr ""
+
+#: users/edituser.html:111
+msgid "associated project: "
+msgstr ""
+
+#: users/edituser.html:112
+msgid ""
+"As long as you are the owner or member of the project, it cannot be removed."
+msgstr ""
+
+#: users/edituser.html:120
+msgid "Activate"
+msgstr ""
+
+#: users/edituser.html:125
+msgid ""
+"As long as it is not associated with at least one Linux user, it cannot be "
+"activated! Add it to a project as a partner, and you can also get an hpc "
+"system user account."
+msgstr ""
+
+#: users/edituser.html:144
+msgid "Webuser"
+msgstr ""
+
+#: users/edituser.html:147 users/inactiveusers.html:31 users/systemuser.html:80
+#: users/users.html:74
+msgid "ADMIN-SITE"
+msgstr ""
+
+#: users/inactiveusers.html:7 users/inactiveusers.html:30
+msgid "Requests"
+msgstr ""
+
+#: users/jupyterhub.html:10
+msgid ""
+"The JupyterHub interface can be used under the associated system users. "
+"Choose from the list!"
+msgstr ""
+
+#: users/jupyterhub.html:11
+msgid "When switching to another user, exit from the JupyterHub interface!!"
+msgstr ""
+
+#: users/jupyterhub.html:20
+msgid "last used"
+msgstr ""
+
+#: users/systemuser.html:27
+msgid "Linux user name"
+msgstr ""
+
+#: users/systemuser.html:35
+msgid ""
+"Please add from command prompt via SSH on cluster master node, (new_user.sh "
+"script)"
+msgstr ""
+
+#: users/systemuser.html:56
+msgid "Webusers: "
+msgstr ""
+
+#: users/users.html:6
+msgid "Webusers (active)"
+msgstr ""
+
+#: users/users.html:9
+msgid "Users"
+msgstr ""
+
+#: users/users.html:28
+msgid "username"
+msgstr ""
+
+#: users/users.html:73
+msgid "Webusers"
+msgstr ""

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% block title %}Projects{% endblock %}
 
 {% block navbar %}
@@ -13,15 +13,15 @@
 {% block content %}
     <h1>Felhasználói adatok</h1>
     <table>
-        <tr><th>Felhasználói név: </th><td>{{ user.username }}</td></tr>
-        <tr><th>Név: </th><td>{{ user.last_name }} {{ user.first_name }}</td></tr>
-        <tr><th>Web Admin jogok: </th><td>{{ user.is_superuser }}</td></tr>
+        <tr><th>{% trans 'Username' %} </th><td>{{ user.username }}</td></tr>
+        <tr><th>{% trans 'Name' %}</th><td>{{ user.last_name }} {{ user.first_name }}</td></tr>
+        <tr><th>{% trans 'Superuser' %} </th><td>{{ user.is_superuser }}</td></tr>
         {% if user.email %}
             <tr><th>Email: </th><td>{{ user.email }}</td></tr>
         {% endif %}
         {% if userdetail.systemuser %}
             <tr>
-                <th>A következő hpc felhasználókhoz társítva: </th>
+                <th>{% trans 'Associated with the following linux users: ' %}</th>
                 <td>
                     {% for sysuser in user.userdetail.systemuser.all %}
                         {% if sysuser.issudo %}
@@ -44,8 +44,8 @@
             </tr>
         {% else %}
             <tr>
-                <th>Systemuser: </th>
-                <td>Nincs rendszerfelhasználóhoz adva</td>
+                <th>{% trans 'Linux users' %}</th>
+                <td>{% trans 'empty' %}</td>
             </tr>
         {% endif %}
     </table>

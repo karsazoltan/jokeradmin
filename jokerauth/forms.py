@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
 
 from jokerauth.models import SSHKey
 from sshjoker.settings import MAXKEYNUM
@@ -16,16 +17,16 @@ class SSHKeyForm(forms.Form):
 
     def clean(self):
         if not self.cleaned_data.get('comment') or not self.cleaned_data.get('pubkey'):
-            raise ValidationError("Töltse ki az összes mezőt!")
+            raise ValidationError(_("Fill all fields!"))
         userKeyNum = SSHKey.objects.filter(user=self.request.user).count()
         if MAXKEYNUM < userKeyNum + 1:
-            raise ValidationError("Maximális kulcsszám elérve!")
+            raise ValidationError(_('maximum number of keys reached'))
         try:
             systemuser = self.request.user.userdetail.systemuser
         except:
-            raise ValidationError("A fiókhoz még nem tartozik társított rendszerfelhasználó (linux user). Kérje meg az egyik admin felhasználót, hogy állítsa be. ")
+            raise ValidationError(_("There is no linux user associated with your account"))
         if self.cleaned_data['pubkey'].count('ssh-rsa') != 1:
-            raise ValidationError("Vagy több kulcs található benne, vagy nem tartalmaz érvényes ssh-rsa kulcsot.")
+            raise ValidationError(_("It does not contain a valid ssh-rsa key"))
 
     def newKey(self, user):
         newkey = SSHKey(user=user, active=False, comment=self.cleaned_data['comment'], pubkey=self.cleaned_data['pubkey'])
@@ -39,10 +40,10 @@ class AdminSSHKeyForm(forms.Form):
 
     def clean(self):
         if not self.cleaned_data.get('username') or not self.cleaned_data.get('comment') or not self.cleaned_data.get('pubkey'):
-            raise ValidationError("Töltse ki az összes mezőt!")
+            raise ValidationError(_("Fill all fields!"))
         user = get_user_model().objects.filter(username=self.cleaned_data['username'])
         if user.count() != 1:
-            raise ValidationError("Nincs ilyen felhasználó: " + self.cleaned_data['username'])
+            raise ValidationError(_('No such user') + self.cleaned_data['username'])
         return self.cleaned_data
 
     def newKey(self):

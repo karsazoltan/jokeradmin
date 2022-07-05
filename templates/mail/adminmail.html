@@ -1,26 +1,18 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% block title %}Projektek{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-    <h1>Csoportos email-ek küldése</h1>
-    <p>Az elküldött üzenetet az összes felhasználó megkapja email formájában. </p>
+    <h1>{% trans 'Send mails' %}</h1>
+    <p>{% trans 'All users will receive the email' %}</p>
     {% if sent %}
         {% if sent == 'true' %}
             <div class="alert alert-success">
-                Email-ek elküldve
+                {% trans 'Sent' %}
             </div>
         {% else %}
             <div class="alert alert-danger">
-                Probléma történt az email-ek postázásakor.
+                {% tran 'error occured' %}
             </div>
         {% endif %}
     {% endif %}
@@ -34,20 +26,20 @@
             </ul>
         {% endif %}
         <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="id_subject">Tárgy:</label>
+            <label class="col-md-2 col-form-label" for="id_subject">{% trans 'Subject' %}</label>
             <div class="col-md-4">
-                <input class="form-control" type="text" name="subject" maxlength="40" required="" id="id_subject" placeholder="Tárgy">
+                <input class="form-control" type="text" name="subject" maxlength="40" required="" id="id_subject" placeholder="{% trans 'Subject' %}">
             </div>
         </div>
         <div class="form-group row">
-            <label for="id_body" class="col-md-2 col-form-label">Üzenet:</label>
+            <label for="id_body" class="col-md-2 col-form-label">{% trans 'Message' %}</label>
             <div class="col-md-4">
-                <textarea class="form-control" name="body" cols="40" rows="10" maxlength="300" required="" id="id_body" placeholder="Üzenet"></textarea>
+                <textarea class="form-control" name="body" cols="40" rows="10" maxlength="300" required="" id="id_body" placeholder="{% trans 'Message body' %}"></textarea>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-md-10">
-                <input type="submit" value="Elküld" class="btn btn-primary">
+                <input type="submit" value="{% trans 'Send' %}" class="btn btn-primary">
             </div>
         </div>
     </form>
