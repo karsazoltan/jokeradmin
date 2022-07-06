@@ -5,7 +5,7 @@ from jokerauth.models import SSHKey
 from jokerauth.service import save_keys
 from projects.models import Project
 from django.contrib.auth import get_user_model
-
+from django.utils.translation import gettext as _
 from users.models import SystemUser
 from users.service import adduser
 
@@ -14,7 +14,7 @@ class AdminProjectForm(forms.Form):
     title = forms.CharField(max_length=100)
     owner = forms.CharField(max_length=100)
     system_user = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+', error_messages={
-        'invalid': ("Csak betűket és számokat tartalmazhat, maximum 40 karakter")})
+        'invalid': _("Only contains letters and numbers")})
     partners = forms.CharField(max_length=200, empty_value="", required=False)
     description = forms.CharField(widget=forms.Textarea, max_length=1000)
     public = forms.BooleanField(required=False, initial=False)
@@ -24,16 +24,16 @@ class AdminProjectForm(forms.Form):
         if self.cleaned_data.get('system_user'):
             user = SystemUser.objects.filter(username=self.cleaned_data['system_user'])
             if user.count() == 1:
-                raise ValidationError("Nem társítható már meglévő HPC felhaszálóhoz!")
+                raise ValidationError(_('It can no longer be associated with an linux user!'))
         else:
-            raise ValidationError('A HPC felhasználó nem lehet üres!')
+            raise ValidationError(_('The linux user field cannot be empty'))
 
         if self.cleaned_data.get('owner'):
             owner = get_user_model().objects.filter(username=self.cleaned_data['owner'])
             if owner.count() == 0:
-                raise ValidationError("Nincs ilyen felhasználó tulajdonosnak: " + self.cleaned_data['owner'])
+                raise ValidationError(_('No such user for owner: ') + self.cleaned_data['owner'])
             elif owner.count() > 1:
-                raise ValidationError("Több felhasználó neve is illeszkedik: " + self.cleaned_data['owner'])
+                raise ValidationError(_("More than one user: ") + self.cleaned_data['owner'])
 
         if self.cleaned_data.get('partners'):
             partnersusername = self.cleaned_data['partners'].split(',')
@@ -41,11 +41,11 @@ class AdminProjectForm(forms.Form):
                 if partnername != "":
                     partner = get_user_model().objects.filter(username=partnername.strip())
                     if partner.count() != 1:
-                        raise ValidationError("Nincs ilyen felhasználó partnernek: " + partnername)
+                        raise ValidationError(_("No such user for partner: ") + partnername)
                     elif partner.count() > 1:
-                        raise ValidationError("Több felhasználó neve is illeszkedik: " + partnername)
+                        raise ValidationError(_("More than one user: ") + partnername)
                     if partner.get() == owner.get():
-                        raise ValidationError("Partner és tulajdonos nem lehet egyszerre: " + partnername)
+                        raise ValidationError(_('You cannot be a partner and an owner at the same time: ') + partnername)
 
         return self.cleaned_data
 
@@ -93,9 +93,9 @@ class AddPartnerForm(forms.Form):
     def clean(self):
         user = get_user_model().objects.filter(username=self.cleaned_data['user'])
         if user.count() == 0:
-            raise ValidationError("Nincs ilyen felhasználó: " + self.cleaned_data['user'])
+            raise ValidationError(_("No such user for partner: ") + self.cleaned_data['user'])
         if user.get() == self.request.user:
-            raise ValidationError("Már tulajdonos vagy!")
+            raise ValidationError(_("You are tho owner"))
         return self.cleaned_data
 
     def addpartner(self, project):

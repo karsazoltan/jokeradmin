@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% block title %}Home{% endblock %}
 
 {% block navbar %}
@@ -12,10 +12,7 @@
 
 {% block content %}
 <div class="alert alert-danger" role="alert">
-    <h1 class="alert-heading">Valami hiba történt!</h1>
-    <p>Valószínüleg olyan lapot látogattál meg, amihez nincs jogosultságod. Lehet hogy érvénytelen műveletet kezdeményeztél, esetleg olyan objektumhoz akartál hozzáférni, ami nem létezik.</p>
-    <hr>
-    <p>Ha szerinted a hiba nem fordulhatna elő, keress meg: <a href="#" class="alert-link">email</a></p>
+    <h1 class="alert-heading">{% trans 'Something wrong...' %}</h1>
 </div>
 
 {% endblock %}

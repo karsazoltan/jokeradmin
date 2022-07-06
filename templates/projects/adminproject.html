@@ -1,22 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Projektek{% endblock %}
+{% block title %}{% trans 'Pojects' %}{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <h1>Projektek</h1>
-
+    <h1>{% trans 'Projects' %}</h1>
     <div class="row">
         <div class="col-sm-4">
-            <h2 id="pagi">Projektek</h2>
+            <h2 id="pagi">{% trans 'List of projects' %}</h2>
         </div>
         <div class="col-sm-3">
             <div class="container-fluid">
@@ -64,7 +57,7 @@
                 </div>
             </div>
         {% empty %}
-            nincs
+            {% trans 'empty' %}
         {% endfor %}
     </div>
     <h2>Projekt létrehozása</h2>
@@ -78,13 +71,13 @@
             </ul>
         {% endif %}
         <div class="form-group row">
-            <label class="col-md-1 col-form-label" for="id_title">Projekt neve:</label>
+            <label class="col-md-1 col-form-label" for="id_title">{% trans 'Name' %}</label>
             <div class="col-md-4">
                 <input type="text" name="title" class="form-control" maxlength="100" required="" id="id_title" placeholder="Cím">
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-md-1 col-form-label" for="id_owner">Tulajdonos:</label>
+            <label class="col-md-1 col-form-label" for="id_owner">{% trans 'Owner' %}</label>
             <div class="col-md-4">
                 <input type="text" name="owner" class="form-control" maxlength="100" required="" id="id_owner" placeholder="Tulajdonos">
                 <small id="linux_help" class="form-text text-muted">A tulajdonos törölheti a projeketet, szerkesztheti a leírást és tagokat adhat hozzá.</small>
@@ -98,14 +91,14 @@
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-md-1 col-form-label" for="id_partners">Partnerek:</label>
+            <label class="col-md-1 col-form-label" for="id_partners">{% trans 'Partners' %}</label>
             <div class="col-md-4">
                 <input type="text" name="partners" class="form-control" maxlength="100" aria-describedby="partner_help" id="id_partners" placeholder="Partnerek">
                 <small id="partner_help" class="form-text text-muted">Felhasználók felsorolása vesszővel: </small>
             </div>
         </div>
         <div class="form-group row">
-            <label for="id_description" class="col-md-1 col-form-label">Leírás:</label>
+            <label for="id_description" class="col-md-1 col-form-label">{% trans 'Description' %}</label>
             <div class="col-md-4">
                 <textarea name="description" class="form-control" cols="40" rows="10" maxlength="1000" aria-describedby="help" required="" id="id_description" placeholder="Leírás">## ADMIN
                     A tulajdonos tudja majd szerkeszteni
@@ -122,7 +115,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="id_public" class="col-md-1 col-form-label">Publikus:</label>
+            <label for="id_public" class="col-md-1 col-form-label">{% trans 'Public' %}</label>
             <div class="col-md-11">
                 <input type="checkbox" name="public" aria-describedby="public_help"  id="id_public">
                 <small id="public_help" class="form-text text-muted">A projekt megjelenik a kezdőlapon mindenki számára.</small>
@@ -130,7 +123,7 @@
         </div>
         <div class="form-group row">
             <div class="col-md-11">
-                <input type="submit" value="Létrehozás" class="btn btn-primary">
+                <input type="submit" value="{% trans 'Create' %}" class="btn btn-primary">
             </div>
         </div>
     </form>
@@ -140,8 +133,8 @@
     <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
         <ol class="breadcrumb">
             <li class="breadcrumb-item link-danger">Admin</li>
-            <li class="breadcrumb-item active" aria-current="page">Projektek</li>
-            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Projects' %}</li>
+            <li class="ml-auto link-danger"><b>{% trans 'ADMIN-SITE' %}</b></li>
         </ol>
     </nav>
 

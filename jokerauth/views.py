@@ -98,7 +98,7 @@ def deletekey(request, id):
     try:
         key = SSHKey.objects.get(pk=id)
     except ObjectDoesNotExist:
-        raise Http404('Kulcs nem található')
+        raise Http404()
     if key.user == request.user:
         key.deleteit()
     else:
@@ -113,7 +113,7 @@ def admindelete(request, id):
     try:
         key = SSHKey.objects.get(pk=id)
     except ObjectDoesNotExist:
-        raise Http404('Kulcs nem található')
+        raise Http404()
     if request.user.is_superuser:
         key.deleteit()
     else:

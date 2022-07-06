@@ -15,6 +15,7 @@ from jokerauth.service import save_keys
 from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER, PUBLIC_URL
 from users.forms import SystemUserForm, RegistrationForm, SetSysUserForm, BroadcastMailForm
 from users.models import UserDetail, SystemUser, UserStatus
+from django.utils.translation import gettext as _
 
 
 @login_required
@@ -26,7 +27,7 @@ def userpage(request):
     try:
         userdetail = UserDetail.objects.filter(user=request.user).get()
     except ObjectDoesNotExist:
-        raise Http404('Adatok nem találhatóak')
+        raise Http404(_('No data found'))
     return render(request, 'users/user.html', {'userdetail': userdetail})
 
 
@@ -74,7 +75,7 @@ def activateuser(request, id):
     userdetail = user.userdetail
     userdetail.status = UserStatus.OK
     userdetail.save()
-    send_mail('Kérelem elfogadva', f'Kérelmét elfogadták a következő felhasználóhoz: {user.username}' + EMAIL_FOOTER,
+    send_mail('Joker - request accepted', f'Your request has been accepted, user: {user.username}' + EMAIL_FOOTER,
               FROM_EMAIL, [user.email])
     user.save()
     return HttpResponseRedirect(f'/edituser/{id}')
@@ -88,7 +89,7 @@ def delete_sysuser_from_user(request, webuser_id, sysuser_id):
         webuser = User.objects.get(pk=webuser_id)
         sysuser = SystemUser.objects.get(pk=sysuser_id)
     except ObjectDoesNotExist:
-        raise Http404('Objektum nem található')
+        raise Http404(_('No data found'))
     webuser.userdetail.systemuser.remove(sysuser)
     # keys = SSHKey.objects.filter(user__userdetail__systemuser__exact=sysuser).filter(active=True)
     save_keys.delay(sysuser.username, True)
@@ -191,7 +192,7 @@ def set_preferred_user(request, sysuser_id):
     userdetail = request.user.userdetail
     userdetail.preferred = picksysuser
     userdetail.save()
-    return redirect(f'http://{PUBLIC_URL}hub/oauth_login?&next=')
+    return redirect(f'https://{PUBLIC_URL}hub/oauth_login?&next=')
 
 
 @login_required

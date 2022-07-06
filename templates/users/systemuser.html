@@ -1,17 +1,10 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}HPC felhasználók{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-    <h2>Új HPC felhasználó hozzáadása</h2>
+    <h2>{% trans 'New linux user' %}</h2>
     {% if cmd %}
         <div class="alert alert-success" role="alert">
             <h1 class="alert-heading">Bash parancs</h1>
@@ -31,7 +24,7 @@
         {% endif %}
         <div class="form-inline">
             <div class="form-group mb-2">
-                <label for="user" class="sr-only">Rendszer felhasználó neve:</label>
+                <label for="user" class="sr-only">{% trans 'Linux user name' %}</label>
                 <input class="form-control autocomplete" id="id_username" type="text" name="username" placeholder="Rendszer felhasználó neve">
             </div>
             <div class="form-group mx-sm-3 mb-2">
@@ -39,10 +32,10 @@
             </div>
         </div>
         <small id="passwordHelpBlock" class="form-text text-muted">
-            A felhasználó linux user-ként hozzáadásra kerül, társítson hozzá webes felhasználót a késöbbi bejelentkezéshez.
+            {% trans 'Please add from command prompt via SSH on cluster master node, (new_user.sh script)' %}
         </small>
     </form>
-    <h2>HPC felhasználók</h2>
+    <h2>{% trans 'Linux users' %}</h2>
     <div class="card-columns">
         {% for sysuser in systemusers %}
             <div class="card">
@@ -60,7 +53,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    Csatolt felhasználói fiókok:
+                    {% trans 'Webusers: ' %}
                     <ul class="list-group">
                         {% for webuser in sysuser.webusers.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center border-top">
@@ -72,7 +65,7 @@
                                 </span>
                             </li>
                         {% empty %}
-                            <i>még nincs társítva</i>
+                            <i>{% trans 'empty' %}</i>
                         {% endfor %}
                     </ul>
                 </div>
@@ -83,8 +76,8 @@
     <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
         <ol class="breadcrumb">
             <li class="breadcrumb-item link-danger">Admin</li>
-            <li class="breadcrumb-item active" aria-current="page">HPC felhasználók</li>
-            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Linux users' %}</li>
+            <li class="ml-auto link-danger"><b>{% trans 'ADMIN-SITE' %}</b></li>
         </ol>
     </nav>
 {% endblock %}

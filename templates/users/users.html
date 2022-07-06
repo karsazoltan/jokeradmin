@@ -1,23 +1,12 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% block title %}Rendszerfelhasználók{% endblock %}
 
-{% block navbar %}
-    {% if user.is_authenticated %}
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'sshkeys' %}">SSH Kulcsok</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'projects' %}">Projektek</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'user' %}">Felhasználó</a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
-    <h1>Aktív webes felhasználók</h1>
+    <h1>{% trans 'Webusers (active)' %}</h1>
     <div class="row">
         <div class="col-sm-4">
-            <h2>Felhasználók böngészése</h2>
-            <small class="form-text text-muted">
-                Felhasználót hozzáadni a regisztrációs lapon lehet.
-            </small>
+            <h2>{% trans 'Users' %}</h2>
         </div>
         <div class="col-sm-3">
             <div class="container-fluid">
@@ -36,7 +25,7 @@
                 <div class="float-sm-end">
                     <div class="input-group my-1">
                         <div class="form-outline">
-                            <input type="search" id="search" placeholder="Felhasználói név" class="form-control" value="{{ filter }}"  />
+                            <input type="search" id="search" placeholder="{% trans 'username' %}" class="form-control" value="{{ filter }}"  />
                         </div>
                         <button type="button"  class="btn btn-primary" onclick="search()"><i class="bi bi-search"></i></button>
                         <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#help"><i class="bi bi-question-square"></i></button>
@@ -57,7 +46,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    Csatolt linux felhasználók:
+                    {% trans 'Linux users' %}
                     <ul class="list-group">
                         {% for sysuser in user.userdetail.systemuser.all %}
                             <li class="list-group-item d-flex justify-content-between align-items-center border-top">
@@ -69,7 +58,7 @@
                                 {% endif %}
                             </li>
                         {% empty %}
-                            <i>még nincs társítva</i>
+                            <i>{% trans 'empty' %}</i>
                         {% endfor %}
                     </ul>
                 </div>
@@ -81,8 +70,8 @@
     <nav style="position: fixed; bottom: 0; right: 0;" aria-label="breadcrumb" class="mt-2 col-sm-8">
         <ol class="breadcrumb">
             <li class="breadcrumb-item link-danger">Admin</li>
-            <li class="breadcrumb-item active" aria-current="page">Webes felhasználók</li>
-            <li class="ml-auto link-danger"><b>ADMIN Oldal</b></li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Webusers' %}</li>
+            <li class="ml-auto link-danger"><b>{% trans 'ADMIN-SITE' %}</b></li>
         </ol>
     </nav>
     <script>

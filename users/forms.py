@@ -5,16 +5,17 @@ from django.core.mail import send_mail
 
 from jokerauth.service import save_keys
 from sshjoker.settings import FROM_EMAIL, EMAIL_FOOTER
-from users.models import SystemUser, UserDetail, UserStatus
+from users.models import SystemUser, UserStatus
 from users.service import adduser
+from django.utils.translation import gettext as _
 
 
 class RegistrationForm(forms.Form):
     description = forms.CharField(max_length=500)
 
     def clean(self):
-        if len(self.cleaned_data['description']) < 30:
-            raise ValidationError("Írjon legalább 30 karakter hosszúságú leírást!")
+        if len(self.cleaned_data['description']) < 50:
+            raise ValidationError(_('Description must be at least 50 characters long (max 500)'))
 
     def createUser(self, user):
         user_detail = user.userdetail
@@ -26,13 +27,14 @@ class RegistrationForm(forms.Form):
     def sendmail(self, username, email, name, desc):
         users = User.objects.filter(is_superuser=True).all()
         mails = map(lambda u: u.email, users)
-        send_mail("Új kérelem - Joker", f"Új felhasználó regisztrált a következő adatokkal: \n {username} - {name} \n {email} \n Kérelem törzse: {desc}" + EMAIL_FOOTER, FROM_EMAIL, mails)
+        send_mail("New request - Joker",
+                  f"New request for Joker, user data: \n {username} - {name} \n {email} \n Request body: {desc}"
+                  + EMAIL_FOOTER, FROM_EMAIL, mails)
 
 
 class SystemUserForm(forms.Form):
     username = forms.RegexField(max_length=40, regex=r'[a-zA-Z0-9]+',
-                                error_messages={'invalid':
-                                                    "Csak betűket és számokat tartalmazhat, maximum 40 karakter"})
+                                error_messages={'invalid': "It can only contain letters and numbers, max 40 character"})
 
     def clean(self):
         super().clean()
@@ -40,7 +42,7 @@ class SystemUserForm(forms.Form):
         if username:
             user = SystemUser.objects.filter(username=username)
             if user.count() == 1:
-                raise ValidationError("Már van ilyen: " + self.cleaned_data['username'])
+                raise ValidationError(_('Already exists ') + self.cleaned_data['username'])
 
     def newSystemUser(self):
         newSystemUser = SystemUser(username=self.cleaned_data['username'])
@@ -61,9 +63,9 @@ class SetSysUserForm(forms.Form):
             sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).filter(project__isnull=True)
             if sysuser.count() != 1:
                 raise ValidationError(
-                    "Nincs ilyen rendszer felhasználó! Lehet egy projekthez társított felhasználóval próbálkozott!")
+                    _('There is no such linux user! Maybe you tried with a user associated with a project!'))
         else:
-            raise ValidationError("Üres rendszernév")
+            raise ValidationError(_('Systemuser is empty'))
 
     def setSysUser(self):
         sysuser = SystemUser.objects.filter(username=self.cleaned_data['systemuser']).get()
@@ -84,4 +86,5 @@ class BroadcastMailForm(forms.Form):
     def sendmail(self):
         users = User.objects.filter(is_active=True).filter(userdetail__status__exact='OK').all()
         mails = map(lambda u: u.email, users)
-        send_mail(self.cleaned_data['subject'] + ' (' + self.user + ')', self.cleaned_data['body'] + EMAIL_FOOTER, FROM_EMAIL, mails)
+        send_mail(self.cleaned_data['subject'] + ' (' + self.user + ')', self.cleaned_data['body'] + EMAIL_FOOTER,
+                  FROM_EMAIL, mails)

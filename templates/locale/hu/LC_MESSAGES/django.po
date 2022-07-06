@@ -1,0 +1,295 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-05 15:29+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: 403.html:15 403_csrf.html:15 404.html:15 error.html:15
+msgid "Something wrong..."
+msgstr "Valami baj van"
+
+#: base.html:32 jokerauth/adminkeys.html:6 jokerauth/adminkeys.html:209
+#: jokerauth/sshkeys.html:7
+msgid "SSH Keys"
+msgstr "SSH Kulcsok"
+
+#: base.html:33 projects/adminproject.html:9 projects/adminproject.html:136
+msgid "Projects"
+msgstr "Projektek"
+
+#: base.html:34
+msgid "My user"
+msgstr "Fiókom"
+
+#: home.html:6
+msgid "Home"
+msgstr "Kezdőlap"
+
+#: jokerauth/adminkeys.html:9
+msgid "Keys"
+msgstr "Kulcsok"
+
+#: jokerauth/adminkeys.html:74 jokerauth/sshkeys.html:86
+msgid "Add new key"
+msgstr "Új kulcs társítása"
+
+#: jokerauth/adminkeys.html:85 jokerauth/adminkeys.html:87
+#: users/edituser.html:9 users/user.html:16
+msgid "Username"
+msgstr "Felhasználói név"
+
+#: jokerauth/adminkeys.html:91 jokerauth/adminkeys.html:93
+#: jokerauth/sshkeys.html:97 jokerauth/sshkeys.html:99
+msgid "Comment"
+msgstr "Megjegyzés"
+
+#: jokerauth/adminkeys.html:97 jokerauth/sshkeys.html:103
+msgid "Key"
+msgstr "Kulcs"
+
+#: jokerauth/adminkeys.html:99 jokerauth/sshkeys.html:105
+msgid "RSA-Key"
+msgstr "RSA-Kulcs"
+
+#: jokerauth/adminkeys.html:104 jokerauth/sshkeys.html:110
+msgid "OK"
+msgstr "Küldés"
+
+#: jokerauth/adminkeys.html:193 jokerauth/sshkeys.html:126
+msgid "Enter the keys here for validation every even minute. That"
+msgstr "Minden páros percben kerül frissítésre, vrájon türelemmel. "
+
+#: jokerauth/adminkeys.html:210 projects/adminproject.html:137
+#: users/edituser.html:147 users/inactiveusers.html:31 users/systemuser.html:80
+#: users/users.html:74
+msgid "ADMIN-SITE"
+msgstr "ADMIN"
+
+#: jokerauth/sshkeys.html:11 users/edituser.html:49 users/edituser.html:88
+#: users/jupyterhub.html:5 users/systemuser.html:38 users/systemuser.html:79
+#: users/user.html:47 users/users.html:49
+msgid "Linux users"
+msgstr "Linux felhasználó"
+
+#: jokerauth/sshkeys.html:35
+msgid ""
+"You can log in to the hpc central machine under the names of the linux users "
+"above, using the ssh keys given below."
+msgstr "A fenti linux felhasználók alatt tud belépni a központi gépre a lenti shh-kulcsokkal!"
+
+#: jokerauth/sshkeys.html:39
+msgid "no linux user"
+msgstr "Nincs ilyen linux felhasználó"
+
+#: jokerauth/sshkeys.html:83 projects/adminproject.html:60
+#: users/edituser.html:44 users/edituser.html:50 users/edituser.html:90
+#: users/systemuser.html:68 users/user.html:48 users/users.html:61
+msgid "empty"
+msgstr "üres"
+
+#: mail/adminmail.html:6
+msgid "Send mails"
+msgstr "Üzenetek küldése"
+
+#: mail/adminmail.html:7
+msgid "All users will receive the email"
+msgstr "Minden felhasználó megkapja az üzenetet email-ként."
+
+#: mail/adminmail.html:11
+msgid "Sent"
+msgstr "Küldés"
+
+#: mail/adminmail.html:29 mail/adminmail.html:31
+msgid "Subject"
+msgstr "Tárgy"
+
+#: mail/adminmail.html:35
+msgid "Message"
+msgstr "Üzenet"
+
+#: mail/adminmail.html:37
+msgid "Message body"
+msgstr "Üzenet törzse"
+
+#: mail/adminmail.html:42
+msgid "Send"
+msgstr "Küldés"
+
+#: projects/adminproject.html:4
+msgid "Pojects"
+msgstr "Projektek"
+
+#: projects/adminproject.html:12
+msgid "List of projects"
+msgstr "Projektek"
+
+#: projects/adminproject.html:74 users/edituser.html:10 users/user.html:17
+msgid "Name"
+msgstr "Neve"
+
+#: projects/adminproject.html:80
+msgid "Owner"
+msgstr "Tulajdonos"
+
+#: projects/adminproject.html:94
+msgid "Partners"
+msgstr "Partnerek"
+
+#: projects/adminproject.html:101
+msgid "Description"
+msgstr "Leírás"
+
+#: projects/adminproject.html:118
+msgid "Public"
+msgstr "Publikus"
+
+#: projects/adminproject.html:126
+msgid "Create"
+msgstr "Létrehozás"
+
+#: registration/login.html:11
+msgid "Login page"
+msgstr "Bejelentkezés"
+
+#: registration/login.html:22 registration/login.html:24 users/users.html:28
+msgid "username"
+msgstr "Felhasználó"
+
+#: registration/login.html:28 registration/login.html:30
+msgid "password"
+msgstr "Jelszó"
+
+#: registration/login.html:35
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: users/accept.html:11
+msgid ""
+"Registration request sent! Wait for approval from an admin user! We will "
+"send you a notification by email if the request has been accepted."
+msgstr "A regisztrációs kérelm elküldve, kérem várjon a jóváhagyásra, email értesítést kap majd, ha jóváhagyták."
+
+#: users/edituser.html:7
+msgid "Edit webuser"
+msgstr "Webes felhasználó szerkesztése"
+
+#: users/edituser.html:11
+msgid "Request status"
+msgstr "Kérelem státusza"
+
+#: users/edituser.html:12 users/user.html:18
+msgid "Superuser"
+msgstr "Admin felhasználó"
+
+#: users/edituser.html:19 users/user.html:24
+msgid "Associated with the following linux users: "
+msgstr "A következő linux felhasználókhoz csatolva:"
+
+#: users/edituser.html:40
+msgid "Request description"
+msgstr "Kérelem leírás"
+
+#: users/edituser.html:55
+msgid "Edit linux users"
+msgstr "Linux user szerkesztése"
+
+#: users/edituser.html:57
+msgid ""
+"By changing the user, the ssh keys will also be transferred to the new linux "
+"user! Its entry into force approx. 2 minutes. Be careful not to associate a "
+"superuser with a lesser-known web user!"
+msgstr "Ha megváltoztatja a linux felhasználót, a régi ssh-kulcsai is az új linux felhasználóhoz fognak kerülni. Vigyázon!"
+
+#: users/edituser.html:69
+msgid "Linux users (not associated with an project user)"
+msgstr "Linux felhasználók (nincsenek projekthez társítva)"
+
+#: users/edituser.html:84 users/systemuser.html:7
+msgid "New linux user"
+msgstr "Új linux felhasználó"
+
+#: users/edituser.html:109
+msgid "Root user: "
+msgstr "Root felhasználó: "
+
+#: users/edituser.html:111
+msgid "associated project: "
+msgstr "Csatlakoztatott projekt: "
+
+#: users/edituser.html:112
+msgid ""
+"As long as you are the owner or member of the project, it cannot be removed."
+msgstr "Ha a projekt tulajdonosa, nem lehet megváltoztatni."
+
+#: users/edituser.html:120
+msgid "Activate"
+msgstr "Aktív"
+
+#: users/edituser.html:125
+msgid ""
+"As long as it is not associated with at least one Linux user, it cannot be "
+"activated! Add it to a project as a partner, and you can also get an hpc "
+"system user account."
+msgstr "Amíg nincs linux felhasználóhoz társítva, nem aktiválható."
+
+#: users/edituser.html:144
+msgid "Webuser"
+msgstr "Webes felhasználó"
+
+#: users/inactiveusers.html:7 users/inactiveusers.html:30
+msgid "Requests"
+msgstr "Kérelmek"
+
+#: users/jupyterhub.html:10
+msgid ""
+"The JupyterHub interface can be used under the associated system users. "
+"Choose from the list!"
+msgstr "A jupyterhub-ot, a csatlakoztatott felhasználók alatt lehet használni. Válasszon a listából!"
+
+#: users/jupyterhub.html:11
+msgid "When switching to another user, exit from the JupyterHub interface!!"
+msgstr "Ha egy másik felhasználóra vált, léprjen ki előtte a jupyterhub felületről!"
+
+#: users/jupyterhub.html:20
+msgid "last used"
+msgstr "utoljára használt"
+
+#: users/systemuser.html:27
+msgid "Linux user name"
+msgstr "Linux felhasználó neve"
+
+#: users/systemuser.html:35
+msgid ""
+"Please add from command prompt via SSH on cluster master node, (new_user.sh "
+"script)"
+msgstr "Biztonsági okokból, kérem adja hozzá SSH-n keresztül a klaszteren!"
+
+#: users/systemuser.html:56
+msgid "Webusers: "
+msgstr "Webes felhasználók: "
+
+#: users/users.html:6
+msgid "Webusers (active)"
+msgstr "Weebes felhasználók (aktív)"
+
+#: users/users.html:9
+msgid "Users"
+msgstr "Felhasználók"
+
+#: users/users.html:73
+msgid "Webusers"
+msgstr "Webes felhasználók"
